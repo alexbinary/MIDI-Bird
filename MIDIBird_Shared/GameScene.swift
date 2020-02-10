@@ -30,6 +30,10 @@ class GameScene: SKScene {
     var gameStarted = false
     var obstacles: [Obstacle] = []
     
+    let mainContactTestBitMask: UInt32 = 1
+    
+    var shouldResetGameOnNextUpdate = false
+    
     
     override func didMove(to view: SKView) {
         
@@ -41,11 +45,15 @@ class GameScene: SKScene {
         connectToMIDIDevice()
         
         view.showsPhysics = true
+        
+        physicsWorld.contactDelegate = self
     }
     
     func generateNewObstacle() -> Obstacle {
         
-        let newObstacle = Obstacle(position: CGPoint(x: defaultCamera.position.x + self.frame.width/2 + obstacleSpacing, y: CGFloat.random(in: -self.frame.height/4...self.frame.height/4)), opening: CGFloat(CGFloat.random(in: minObstacleSize...maxObstacleSize)))
+        let position = defaultCamera.position.x + self.frame.width/2 + (obstacles.isEmpty ? 0 : obstacleSpacing)
+        
+        let newObstacle = Obstacle(position: CGPoint(x: position, y: CGFloat.random(in: -self.frame.height/4...self.frame.height/4)), opening: CGFloat(CGFloat.random(in: minObstacleSize...maxObstacleSize)))
         obstacles.insert(newObstacle, at: 0)
         
         return newObstacle
@@ -65,6 +73,15 @@ class GameScene: SKScene {
         if defaultCamera != nil {
             self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame.offsetBy(dx: -self.frame.width/2 + defaultCamera.position.x , dy: -self.frame.height/2))
         }
+    }
+    
+    
+    func clearObstacles() {
+        
+        self.removeChildren(in: [SKNode](obstacleNodesByObstacleId.values))
+        obstacleNodesByObstacleId.removeAll()
+        
+        obstacles.removeAll()
     }
     
     
@@ -97,6 +114,7 @@ class GameScene: SKScene {
         characterNode = SKShapeNode(circleOfRadius: 10)
         characterNode.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         characterNode.physicsBody?.isDynamic = false
+        characterNode.physicsBody?.contactTestBitMask = mainContactTestBitMask
         characterNode.run(SKAction.repeatForever(SKAction.moveBy(x: playerHorizontalSpeed, y: 0, duration: 1)))
         self.addChild(characterNode)
     }
@@ -129,6 +147,15 @@ class GameScene: SKScene {
     
     override func didFinishUpdate() {
         
+        if shouldResetGameOnNextUpdate {
+            characterNode.position = CGPoint.zero
+            characterNode.physicsBody?.velocity = CGVector(dx: characterNode.physicsBody!.velocity.dx, dy: 0)
+            clearObstacles()
+            characterNode.physicsBody?.isDynamic = false
+            shouldResetGameOnNextUpdate = false
+            gameStarted = false
+        }
+        
         defaultCamera.position = CGPoint(x: characterNode.position.x, y: 0)
         updateEdgeLoop()
         
@@ -150,11 +177,13 @@ class GameScene: SKScene {
         
         let bottomNode = createPhysicsRectangleWithRect(CGRect(x: -obstacleWidth/2, y: -opening/2 - height, width: obstacleWidth, height: self.frame.height/2 - opening/2 + position.y))
         bottomNode.physicsBody!.isDynamic = false
+        bottomNode.physicsBody?.contactTestBitMask = mainContactTestBitMask
         bottomNode.position = position
         rootNode.addChild(bottomNode)
         
         let topNode = createPhysicsRectangleWithRect(CGRect(x: -obstacleWidth/2, y: opening/2, width: obstacleWidth, height: self.frame.height/2 - opening/2 - position.y))
         topNode.physicsBody!.isDynamic = false
+        topNode.physicsBody?.contactTestBitMask = mainContactTestBitMask
         topNode.position = position
         rootNode.addChild(topNode)
         
@@ -181,5 +210,15 @@ extension SKNode {
     func isVisibleBy(_ camera: SKCameraNode) -> Bool {
         
         return ([self]+self.children).contains(where: { camera.contains($0) })
+    }
+}
+
+
+extension GameScene: SKPhysicsContactDelegate {
+    
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+            
+        shouldResetGameOnNextUpdate = true
     }
 }
