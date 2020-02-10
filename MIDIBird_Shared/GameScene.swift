@@ -1,5 +1,6 @@
 
 import SpriteKit
+import MIKMIDI
 
 
 class GameScene: SKScene {
