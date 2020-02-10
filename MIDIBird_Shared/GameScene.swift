@@ -39,6 +39,8 @@ class GameScene: SKScene {
         
         initCharacter()
         connectToMIDIDevice()
+        
+        view.showsPhysics = true
     }
     
     func generateNewObstacle() -> Obstacle {
@@ -144,7 +146,9 @@ class GameScene: SKScene {
         
         let rootNode = SKNode()
         
-        let bottomNode = createPhysicsRectangleWithRect(CGRect(x: -obstacleWidth/2, y: -opening/2, width: obstacleWidth, height: -(self.frame.height/2 - opening/2 + position.y)))
+        let height = self.frame.height/2 - opening/2 + position.y
+        
+        let bottomNode = createPhysicsRectangleWithRect(CGRect(x: -obstacleWidth/2, y: -opening/2 - height, width: obstacleWidth, height: self.frame.height/2 - opening/2 + position.y))
         bottomNode.physicsBody!.isDynamic = false
         bottomNode.position = position
         rootNode.addChild(bottomNode)
@@ -164,7 +168,7 @@ class GameScene: SKScene {
         
         let path = CGPath(rect: rect, transform: nil)
         let node = SKShapeNode(path: path)
-        node.physicsBody = SKPhysicsBody(rectangleOf: rect.size, center: CGPoint(x: rect.width / 2.0, y: rect.height / 2.0))
+        node.physicsBody = SKPhysicsBody(rectangleOf: rect.size, center: CGPoint(x: rect.midX, y: rect.midY))
         
         return node
     }
