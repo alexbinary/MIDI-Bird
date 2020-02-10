@@ -7,27 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		29C363A923F14B87003C4DF4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363A823F14B87003C4DF4 /* AppDelegate.swift */; };
-		29C363AB23F14B87003C4DF4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363AA23F14B87003C4DF4 /* SceneDelegate.swift */; };
-		29C363AD23F14B87003C4DF4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363AC23F14B87003C4DF4 /* ViewController.swift */; };
-		29C363B023F14B87003C4DF4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29C363AE23F14B87003C4DF4 /* Main.storyboard */; };
-		29C363B223F14B88003C4DF4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29C363B123F14B88003C4DF4 /* Assets.xcassets */; };
-		29C363B523F14B88003C4DF4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29C363B323F14B88003C4DF4 /* LaunchScreen.storyboard */; };
 		29C363C323F14BDE003C4DF4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363C223F14BDE003C4DF4 /* AppDelegate.swift */; };
 		29C363C523F14BDE003C4DF4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363C423F14BDE003C4DF4 /* ViewController.swift */; };
 		29C363C723F14BDF003C4DF4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29C363C623F14BDF003C4DF4 /* Assets.xcassets */; };
 		29C363CA23F14BDF003C4DF4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29C363C823F14BDF003C4DF4 /* Main.storyboard */; };
+		29C363DF23F14EA0003C4DF4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363DE23F14EA0003C4DF4 /* AppDelegate.swift */; };
+		29C363E123F14EA0003C4DF4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363E023F14EA0003C4DF4 /* SceneDelegate.swift */; };
+		29C363E323F14EA0003C4DF4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363E223F14EA0003C4DF4 /* ViewController.swift */; };
+		29C363E623F14EA0003C4DF4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29C363E423F14EA0003C4DF4 /* Main.storyboard */; };
+		29C363E823F14EA2003C4DF4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29C363E723F14EA2003C4DF4 /* Assets.xcassets */; };
+		29C363EB23F14EA2003C4DF4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29C363E923F14EA2003C4DF4 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		29C363A523F14B87003C4DF4 /* MIDIBird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MIDIBird.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		29C363A823F14B87003C4DF4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		29C363AA23F14B87003C4DF4 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		29C363AC23F14B87003C4DF4 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		29C363AF23F14B87003C4DF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		29C363B123F14B88003C4DF4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		29C363B423F14B88003C4DF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		29C363B623F14B88003C4DF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29C363C023F14BDE003C4DF4 /* MIDIBird_Mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MIDIBird_Mac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		29C363C223F14BDE003C4DF4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		29C363C423F14BDE003C4DF4 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -35,17 +27,25 @@
 		29C363C923F14BDF003C4DF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		29C363CB23F14BDF003C4DF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29C363CC23F14BDF003C4DF4 /* MIDIBird_Mac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MIDIBird_Mac.entitlements; sourceTree = "<group>"; };
+		29C363DC23F14EA0003C4DF4 /* MIDIBird_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MIDIBird_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		29C363DE23F14EA0003C4DF4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		29C363E023F14EA0003C4DF4 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		29C363E223F14EA0003C4DF4 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		29C363E523F14EA0003C4DF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		29C363E723F14EA2003C4DF4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		29C363EA23F14EA2003C4DF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		29C363EC23F14EA2003C4DF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		29C363A223F14B87003C4DF4 /* Frameworks */ = {
+		29C363BD23F14BDE003C4DF4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		29C363BD23F14BDE003C4DF4 /* Frameworks */ = {
+		29C363D923F14EA0003C4DF4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -59,7 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				29C363C123F14BDE003C4DF4 /* MIDIBird_Mac */,
-				29C363A723F14B87003C4DF4 /* MIDIBird */,
+				29C363DD23F14EA0003C4DF4 /* MIDIBird_iOS */,
 				29C363A623F14B87003C4DF4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -67,24 +67,10 @@
 		29C363A623F14B87003C4DF4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				29C363A523F14B87003C4DF4 /* MIDIBird.app */,
 				29C363C023F14BDE003C4DF4 /* MIDIBird_Mac.app */,
+				29C363DC23F14EA0003C4DF4 /* MIDIBird_iOS.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		29C363A723F14B87003C4DF4 /* MIDIBird */ = {
-			isa = PBXGroup;
-			children = (
-				29C363A823F14B87003C4DF4 /* AppDelegate.swift */,
-				29C363AA23F14B87003C4DF4 /* SceneDelegate.swift */,
-				29C363AC23F14B87003C4DF4 /* ViewController.swift */,
-				29C363AE23F14B87003C4DF4 /* Main.storyboard */,
-				29C363B123F14B88003C4DF4 /* Assets.xcassets */,
-				29C363B323F14B88003C4DF4 /* LaunchScreen.storyboard */,
-				29C363B623F14B88003C4DF4 /* Info.plist */,
-			);
-			path = MIDIBird;
 			sourceTree = "<group>";
 		};
 		29C363C123F14BDE003C4DF4 /* MIDIBird_Mac */ = {
@@ -100,26 +86,23 @@
 			path = MIDIBird_Mac;
 			sourceTree = "<group>";
 		};
+		29C363DD23F14EA0003C4DF4 /* MIDIBird_iOS */ = {
+			isa = PBXGroup;
+			children = (
+				29C363DE23F14EA0003C4DF4 /* AppDelegate.swift */,
+				29C363E023F14EA0003C4DF4 /* SceneDelegate.swift */,
+				29C363E223F14EA0003C4DF4 /* ViewController.swift */,
+				29C363E423F14EA0003C4DF4 /* Main.storyboard */,
+				29C363E723F14EA2003C4DF4 /* Assets.xcassets */,
+				29C363E923F14EA2003C4DF4 /* LaunchScreen.storyboard */,
+				29C363EC23F14EA2003C4DF4 /* Info.plist */,
+			);
+			path = MIDIBird_iOS;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		29C363A423F14B87003C4DF4 /* MIDIBird */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 29C363B923F14B88003C4DF4 /* Build configuration list for PBXNativeTarget "MIDIBird" */;
-			buildPhases = (
-				29C363A123F14B87003C4DF4 /* Sources */,
-				29C363A223F14B87003C4DF4 /* Frameworks */,
-				29C363A323F14B87003C4DF4 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = MIDIBird;
-			productName = MIDIBird;
-			productReference = 29C363A523F14B87003C4DF4 /* MIDIBird.app */;
-			productType = "com.apple.product-type.application";
-		};
 		29C363BF23F14BDE003C4DF4 /* MIDIBird_Mac */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 29C363CD23F14BDF003C4DF4 /* Build configuration list for PBXNativeTarget "MIDIBird_Mac" */;
@@ -137,6 +120,23 @@
 			productReference = 29C363C023F14BDE003C4DF4 /* MIDIBird_Mac.app */;
 			productType = "com.apple.product-type.application";
 		};
+		29C363DB23F14EA0003C4DF4 /* MIDIBird_iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 29C363ED23F14EA2003C4DF4 /* Build configuration list for PBXNativeTarget "MIDIBird_iOS" */;
+			buildPhases = (
+				29C363D823F14EA0003C4DF4 /* Sources */,
+				29C363D923F14EA0003C4DF4 /* Frameworks */,
+				29C363DA23F14EA0003C4DF4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MIDIBird_iOS;
+			productName = MIDIBird_iOS;
+			productReference = 29C363DC23F14EA0003C4DF4 /* MIDIBird_iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -147,10 +147,10 @@
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = "Alexandre Bintz";
 				TargetAttributes = {
-					29C363A423F14B87003C4DF4 = {
+					29C363BF23F14BDE003C4DF4 = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
-					29C363BF23F14BDE003C4DF4 = {
+					29C363DB23F14EA0003C4DF4 = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
 				};
@@ -168,23 +168,13 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				29C363A423F14B87003C4DF4 /* MIDIBird */,
 				29C363BF23F14BDE003C4DF4 /* MIDIBird_Mac */,
+				29C363DB23F14EA0003C4DF4 /* MIDIBird_iOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		29C363A323F14B87003C4DF4 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				29C363B523F14B88003C4DF4 /* LaunchScreen.storyboard in Resources */,
-				29C363B223F14B88003C4DF4 /* Assets.xcassets in Resources */,
-				29C363B023F14B87003C4DF4 /* Main.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		29C363BE23F14BDE003C4DF4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -194,19 +184,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
-		29C363A123F14B87003C4DF4 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
+		29C363DA23F14EA0003C4DF4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				29C363AD23F14B87003C4DF4 /* ViewController.swift in Sources */,
-				29C363A923F14B87003C4DF4 /* AppDelegate.swift in Sources */,
-				29C363AB23F14B87003C4DF4 /* SceneDelegate.swift in Sources */,
+				29C363EB23F14EA2003C4DF4 /* LaunchScreen.storyboard in Resources */,
+				29C363E823F14EA2003C4DF4 /* Assets.xcassets in Resources */,
+				29C363E623F14EA0003C4DF4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
 		29C363BC23F14BDE003C4DF4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -216,31 +206,41 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		29C363D823F14EA0003C4DF4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				29C363E323F14EA0003C4DF4 /* ViewController.swift in Sources */,
+				29C363DF23F14EA0003C4DF4 /* AppDelegate.swift in Sources */,
+				29C363E123F14EA0003C4DF4 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		29C363AE23F14B87003C4DF4 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				29C363AF23F14B87003C4DF4 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		29C363B323F14B88003C4DF4 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				29C363B423F14B88003C4DF4 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
 		29C363C823F14BDF003C4DF4 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				29C363C923F14BDF003C4DF4 /* Base */,
 			);
 			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		29C363E423F14EA0003C4DF4 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				29C363E523F14EA0003C4DF4 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		29C363E923F14EA2003C4DF4 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				29C363EA23F14EA2003C4DF4 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -360,42 +360,6 @@
 			};
 			name = Release;
 		};
-		29C363BA23F14B88003C4DF4 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2N6DR3R99K;
-				INFOPLIST_FILE = MIDIBird/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.bintz.MIDIBird;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		29C363BB23F14B88003C4DF4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2N6DR3R99K;
-				INFOPLIST_FILE = MIDIBird/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.bintz.MIDIBird;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		29C363CE23F14BDF003C4DF4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -440,6 +404,42 @@
 			};
 			name = Release;
 		};
+		29C363EE23F14EA2003C4DF4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2N6DR3R99K;
+				INFOPLIST_FILE = MIDIBird_iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.bintz.MIDIBird-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		29C363EF23F14EA2003C4DF4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2N6DR3R99K;
+				INFOPLIST_FILE = MIDIBird_iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.bintz.MIDIBird-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -452,20 +452,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		29C363B923F14B88003C4DF4 /* Build configuration list for PBXNativeTarget "MIDIBird" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				29C363BA23F14B88003C4DF4 /* Debug */,
-				29C363BB23F14B88003C4DF4 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		29C363CD23F14BDF003C4DF4 /* Build configuration list for PBXNativeTarget "MIDIBird_Mac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				29C363CE23F14BDF003C4DF4 /* Debug */,
 				29C363CF23F14BDF003C4DF4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		29C363ED23F14EA2003C4DF4 /* Build configuration list for PBXNativeTarget "MIDIBird_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29C363EE23F14EA2003C4DF4 /* Debug */,
+				29C363EF23F14EA2003C4DF4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
