@@ -6,7 +6,12 @@ import MIKMIDI
 class GameScene: SKScene {
     
     
+    let inputSensibility: CGFloat = 0.2 // point per velocity unit
+    
     let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
+    
+    
+    var characterNode: SKShapeNode!
     
 
     override func didMove(to view: SKView) {
@@ -23,7 +28,7 @@ class GameScene: SKScene {
     
     func initCharacter() {
         
-        let characterNode = SKShapeNode(circleOfRadius: 10)
+        characterNode = SKShapeNode(circleOfRadius: 10)
         
         characterNode.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         
@@ -37,13 +42,19 @@ class GameScene: SKScene {
         
         try! MIKMIDIDeviceManager.shared.connect(device) { (_, commands) in
             commands.compactMap { $0 as? MIKMIDINoteOnCommand } .forEach { command in
-                self.processInput(command.velocity)
+                self.onMIDIInput(command.velocity)
             }
         }
     }
     
     
-    func processInput(_ value: UInt) {
+    func onMIDIInput(_ velocity: UInt) {
         
+        if self.isPaused {
+            self.isPaused = false
+            return
+        }
+        
+        characterNode.physicsBody!.applyImpulse(CGVector(dx: 0, dy: CGFloat(velocity) * inputSensibility))
     }
 }
