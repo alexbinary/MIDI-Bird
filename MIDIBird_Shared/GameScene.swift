@@ -7,6 +7,7 @@ struct Obstacle {
     
     let position: CGPoint
     let opening: CGFloat
+    let id: UUID = UUID()
 }
 
 
@@ -17,8 +18,6 @@ class GameScene: SKScene {
     let initialHorizontalImpulseMagnitude: CGFloat = 5 // Newton.seconds
     let obstacleWidth: CGFloat = 20
     let obstacleSpacing: CGFloat = 400
-    let firstObstaclePosition: CGFloat = 400
-    let lastObstaclePosition: CGFloat = 1000
     let minObstacleSize: CGFloat = 40
     let maxObstacleSize: CGFloat = 200
     
@@ -26,8 +25,9 @@ class GameScene: SKScene {
     
     var defaultCamera: SKCameraNode!
     var characterNode: SKShapeNode!
-    var obstacleNodes: [SKNode] = []
+    var obstacleNodesByObstacleId: [UUID: SKNode] = [:]
     
+    var positionOfNextObstacle: CGFloat = 400
     var obstacles: [Obstacle] = []
     
     
@@ -41,28 +41,45 @@ class GameScene: SKScene {
         
         initCharacter()
         connectToMIDIDevice()
+    }
+    
+    func generateNewObstacle() -> Obstacle {
         
-        obstacles = stride(from: firstObstaclePosition, to: lastObstaclePosition, by: obstacleSpacing).map { x in
-            Obstacle(position: CGPoint(x: x, y: CGFloat.random(in: -self.frame.height...self.frame.height)), opening: CGFloat(CGFloat.random(in: minObstacleSize...maxObstacleSize)))
-        }
+        let newObstacle = Obstacle(position: CGPoint(x: positionOfNextObstacle, y: CGFloat.random(in: -self.frame.height...self.frame.height)), opening: CGFloat(CGFloat.random(in: minObstacleSize...maxObstacleSize)))
+        obstacles.insert(newObstacle, at: 0)
+        positionOfNextObstacle += obstacleSpacing
         
-        redrawObstacles()
+        return newObstacle
     }
     
     
     override func didChangeSize(_ oldSize: CGSize) {
         
-        print("didChangeSize")
         redrawObstacles()
     }
     
     
     func redrawObstacles() {
         
-        self.removeChildren(in: obstacleNodes)
-        obstacleNodes = obstacles.map { obstacle in
-            addObstacleNode(position: obstacle.position, opening: obstacle.opening)
+        self.removeChildren(in: [SKNode](obstacleNodesByObstacleId.values))
+        obstacleNodesByObstacleId.removeAll()
+        
+        ensureAllObstaclesHaveNodes()
+    }
+    
+    
+    func ensureAllObstaclesHaveNodes() {
+        
+        obstacles.forEach { obstacle in
+            if obstacleNodesByObstacleId[obstacle.id] == nil {
+                createNode(for: obstacle)
+            }
         }
+    }
+    
+    
+    func createNode(for obstacle: Obstacle) {
+        obstacleNodesByObstacleId[obstacle.id] = addObstacleNode(position: obstacle.position, opening: obstacle.opening)
     }
     
     
@@ -100,7 +117,14 @@ class GameScene: SKScene {
     
     
     override func didFinishUpdate() {
+        
         defaultCamera.position = CGPoint(x: characterNode.position.x, y: 0)
+        
+        ensureAllObstaclesHaveNodes()
+        while obstacles.isEmpty || obstacleNodesByObstacleId[obstacles.first!.id]!.isVisibleBy(defaultCamera) {
+            let newObstacle = generateNewObstacle()
+            createNode(for: newObstacle)
+        }
     }
     
     
@@ -128,8 +152,18 @@ class GameScene: SKScene {
         
         let path = CGPath(rect: rect, transform: nil)
         let node = SKShapeNode(path: path)
-        node.physicsBody = SKPhysicsBody(rectangleOf: rect.size, center: CGPoint(x: rect.width / 2.0, y: rect.height / 2.0))
+//        node.physicsBody = SKPhysicsBody(rectangleOf: rect.size, center: CGPoint(x: rect.width / 2.0, y: rect.height / 2.0))
         
         return node
+    }
+}
+
+
+extension SKNode {
+    
+    
+    func isVisibleBy(_ camera: SKCameraNode) -> Bool {
+        
+        return ([self]+self.children).contains(where: { camera.contains($0) })
     }
 }
