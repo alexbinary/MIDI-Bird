@@ -17,6 +17,8 @@
 		29C363E623F14EA0003C4DF4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29C363E423F14EA0003C4DF4 /* Main.storyboard */; };
 		29C363E823F14EA2003C4DF4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29C363E723F14EA2003C4DF4 /* Assets.xcassets */; };
 		29C363EB23F14EA2003C4DF4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29C363E923F14EA2003C4DF4 /* LaunchScreen.storyboard */; };
+		29C363F923F15948003C4DF4 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363F823F15948003C4DF4 /* GameScene.swift */; };
+		29C363FA23F15A05003C4DF4 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363F823F15948003C4DF4 /* GameScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +37,7 @@
 		29C363E723F14EA2003C4DF4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		29C363EA23F14EA2003C4DF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		29C363EC23F14EA2003C4DF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		29C363F823F15948003C4DF4 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +101,7 @@
 		29C363F423F1546B003C4DF4 /* MIDIBird_Shared */ = {
 			isa = PBXGroup;
 			children = (
+				29C363F823F15948003C4DF4 /* GameScene.swift */,
 			);
 			path = MIDIBird_Shared;
 			sourceTree = "<group>";
@@ -225,6 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29C363F923F15948003C4DF4 /* GameScene.swift in Sources */,
 				29C363C523F14BDE003C4DF4 /* ViewController.swift in Sources */,
 				29C363C323F14BDE003C4DF4 /* AppDelegate.swift in Sources */,
 			);
@@ -236,6 +241,7 @@
 			files = (
 				29C363E323F14EA0003C4DF4 /* ViewController.swift in Sources */,
 				29C363DF23F14EA0003C4DF4 /* AppDelegate.swift in Sources */,
+				29C363FA23F15A05003C4DF4 /* GameScene.swift in Sources */,
 				29C363E123F14EA0003C4DF4 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
