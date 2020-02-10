@@ -9,6 +9,8 @@ class GameScene: SKScene {
         
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
+        self.isPaused = true
+        
         initCharacter()
     }
     
