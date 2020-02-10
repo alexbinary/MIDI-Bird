@@ -45,7 +45,7 @@ class GameScene: SKScene {
     
     func generateNewObstacle() -> Obstacle {
         
-        let newObstacle = Obstacle(position: CGPoint(x: positionOfNextObstacle, y: CGFloat.random(in: -self.frame.height...self.frame.height)), opening: CGFloat(CGFloat.random(in: minObstacleSize...maxObstacleSize)))
+        let newObstacle = Obstacle(position: CGPoint(x: positionOfNextObstacle, y: CGFloat.random(in: -self.frame.height/4...self.frame.height/4)), opening: CGFloat(CGFloat.random(in: minObstacleSize...maxObstacleSize)))
         obstacles.insert(newObstacle, at: 0)
         positionOfNextObstacle += obstacleSpacing
         
@@ -152,7 +152,7 @@ class GameScene: SKScene {
         
         let path = CGPath(rect: rect, transform: nil)
         let node = SKShapeNode(path: path)
-//        node.physicsBody = SKPhysicsBody(rectangleOf: rect.size, center: CGPoint(x: rect.width / 2.0, y: rect.height / 2.0))
+        node.physicsBody = SKPhysicsBody(rectangleOf: rect.size, center: CGPoint(x: rect.width / 2.0, y: rect.height / 2.0))
         
         return node
     }
