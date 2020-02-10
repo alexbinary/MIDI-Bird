@@ -15,7 +15,7 @@ class GameScene: SKScene {
     
     
     let inputSensibility: CGFloat = 0.2 // Newton.seconds per input velocity unit
-    let initialHorizontalImpulseMagnitude: CGFloat = 5 // Newton.seconds
+    let playerHorizontalSpeed: CGFloat = 200 // points per second
     let obstacleWidth: CGFloat = 20
     let obstacleSpacing: CGFloat = 400
     let minObstacleSize: CGFloat = 40
@@ -107,7 +107,7 @@ class GameScene: SKScene {
         
         if self.isPaused {
             self.isPaused = false
-            characterNode.physicsBody!.applyImpulse(CGVector(dx: initialHorizontalImpulseMagnitude, dy: 0))
+            characterNode.run(SKAction.repeatForever(SKAction.moveBy(x: playerHorizontalSpeed, y: 0, duration: 1)))
             return
         }
         
