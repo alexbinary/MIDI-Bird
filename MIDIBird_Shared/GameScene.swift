@@ -41,7 +41,7 @@ class GameScene: SKScene {
         let device = MIKMIDIDeviceManager.shared.availableDevices.first(where: { $0.displayName == MIDIDeviceName })!
         
         try! MIKMIDIDeviceManager.shared.connect(device) { (_, commands) in
-            commands.compactMap { $0 as? MIKMIDINoteOnCommand } .forEach { command in
+            commands.compactMap { $0 as? MIKMIDINoteOnCommand } .filter { $0.velocity > 0 } .forEach { command in
                 self.onMIDIInput(command.velocity)
             }
         }
