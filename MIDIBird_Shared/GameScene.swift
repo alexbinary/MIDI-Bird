@@ -55,6 +55,7 @@ class GameScene: SKScene {
             return
         }
         
+        characterNode.physicsBody!.velocity = CGVector.zero
         characterNode.physicsBody!.applyImpulse(CGVector(dx: 0, dy: CGFloat(velocity) * inputSensibility))
     }
 }
