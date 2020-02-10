@@ -27,7 +27,7 @@ class GameScene: SKScene {
     var characterNode: SKShapeNode!
     var obstacleNodesByObstacleId: [UUID: SKNode] = [:]
     
-    var positionOfNextObstacle: CGFloat = 400
+    var gameStarted = false
     var obstacles: [Obstacle] = []
     
     
@@ -37,17 +37,14 @@ class GameScene: SKScene {
         self.addChild(defaultCamera)
         self.camera = defaultCamera
         
-        self.isPaused = true
-        
         initCharacter()
         connectToMIDIDevice()
     }
     
     func generateNewObstacle() -> Obstacle {
         
-        let newObstacle = Obstacle(position: CGPoint(x: positionOfNextObstacle, y: CGFloat.random(in: -self.frame.height/4...self.frame.height/4)), opening: CGFloat(CGFloat.random(in: minObstacleSize...maxObstacleSize)))
+        let newObstacle = Obstacle(position: CGPoint(x: defaultCamera.position.x + self.frame.width/2 + obstacleSpacing, y: CGFloat.random(in: -self.frame.height/4...self.frame.height/4)), opening: CGFloat(CGFloat.random(in: minObstacleSize...maxObstacleSize)))
         obstacles.insert(newObstacle, at: 0)
-        positionOfNextObstacle += obstacleSpacing
         
         return newObstacle
     }
@@ -87,6 +84,8 @@ class GameScene: SKScene {
         
         characterNode = SKShapeNode(circleOfRadius: 10)
         characterNode.physicsBody = SKPhysicsBody(circleOfRadius: 10)
+        characterNode.physicsBody?.isDynamic = false
+        characterNode.run(SKAction.repeatForever(SKAction.moveBy(x: playerHorizontalSpeed, y: 0, duration: 1)))
         self.addChild(characterNode)
     }
     
@@ -105,9 +104,9 @@ class GameScene: SKScene {
     
     func onMIDIInput(_ velocity: UInt) {
         
-        if self.isPaused {
-            self.isPaused = false
-            characterNode.run(SKAction.repeatForever(SKAction.moveBy(x: playerHorizontalSpeed, y: 0, duration: 1)))
+        if characterNode.physicsBody?.isDynamic == false {
+            characterNode.physicsBody?.isDynamic = true
+            gameStarted = true
             return
         }
         
@@ -120,10 +119,12 @@ class GameScene: SKScene {
         
         defaultCamera.position = CGPoint(x: characterNode.position.x, y: 0)
         
-        ensureAllObstaclesHaveNodes()
-        while obstacles.isEmpty || obstacleNodesByObstacleId[obstacles.first!.id]!.isVisibleBy(defaultCamera) {
-            let newObstacle = generateNewObstacle()
-            createNode(for: newObstacle)
+        if gameStarted {
+            ensureAllObstaclesHaveNodes()
+            while obstacles.isEmpty || obstacleNodesByObstacleId[obstacles.first!.id]!.isVisibleBy(defaultCamera) {
+                let newObstacle = generateNewObstacle()
+                createNode(for: newObstacle)
+            }
         }
     }
     
