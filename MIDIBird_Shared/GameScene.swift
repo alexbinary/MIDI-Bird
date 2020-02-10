@@ -5,6 +5,9 @@ import MIKMIDI
 
 class GameScene: SKScene {
     
+    
+    let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
+    
 
     override func didMove(to view: SKView) {
         
@@ -13,6 +16,8 @@ class GameScene: SKScene {
         self.isPaused = true
         
         initCharacter()
+        
+        connectToMIDIDevice()
     }
     
     
@@ -23,5 +28,22 @@ class GameScene: SKScene {
         characterNode.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         
         self.addChild(characterNode)
+    }
+    
+    
+    func connectToMIDIDevice() {
+        
+        let device = MIKMIDIDeviceManager.shared.availableDevices.first(where: { $0.displayName == MIDIDeviceName })!
+        
+        try! MIKMIDIDeviceManager.shared.connect(device) { (_, commands) in
+            commands.compactMap { $0 as? MIKMIDINoteOnCommand } .forEach { command in
+                self.processInput(command.velocity)
+            }
+        }
+    }
+    
+    
+    func processInput(_ value: UInt) {
+        
     }
 }
