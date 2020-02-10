@@ -60,6 +60,7 @@
 			children = (
 				29C363C123F14BDE003C4DF4 /* MIDIBird_Mac */,
 				29C363DD23F14EA0003C4DF4 /* MIDIBird_iOS */,
+				29C363F423F1546B003C4DF4 /* MIDIBird_Shared */,
 				29C363A623F14B87003C4DF4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -98,6 +99,13 @@
 				29C363EC23F14EA2003C4DF4 /* Info.plist */,
 			);
 			path = MIDIBird_iOS;
+			sourceTree = "<group>";
+		};
+		29C363F423F1546B003C4DF4 /* MIDIBird_Shared */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = MIDIBird_Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
