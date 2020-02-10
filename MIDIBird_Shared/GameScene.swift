@@ -16,6 +16,11 @@ class GameScene: SKScene {
     let inputSensibility: CGFloat = 0.2 // Newton.seconds per input velocity unit
     let initialHorizontalImpulseMagnitude: CGFloat = 5 // Newton.seconds
     let obstacleWidth: CGFloat = 20
+    let obstacleSpacing: CGFloat = 400
+    let firstObstaclePosition: CGFloat = 400
+    let lastObstaclePosition: CGFloat = 1000
+    let minObstacleSize: CGFloat = 40
+    let maxObstacleSize: CGFloat = 200
     
     let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
     
@@ -37,8 +42,8 @@ class GameScene: SKScene {
         initCharacter()
         connectToMIDIDevice()
         
-        obstacles = stride(from: 100, to: 1000, by: 100).map { x in
-            Obstacle(position: CGPoint(x: x, y: Int.random(in: -Int(self.frame.height)...Int(self.frame.height))), opening: CGFloat(Int.random(in: 40...200)))
+        obstacles = stride(from: firstObstaclePosition, to: lastObstaclePosition, by: obstacleSpacing).map { x in
+            Obstacle(position: CGPoint(x: x, y: CGFloat.random(in: -self.frame.height...self.frame.height)), opening: CGFloat(CGFloat.random(in: minObstacleSize...maxObstacleSize)))
         }
         
         redrawObstacles()
