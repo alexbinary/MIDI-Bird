@@ -53,6 +53,16 @@ class GameScene: SKScene {
     override func didChangeSize(_ oldSize: CGSize) {
         
         redrawObstacles()
+        
+        updateEdgeLoop()
+    }
+    
+    
+    func updateEdgeLoop() {
+        
+        if defaultCamera != nil {
+            self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame.offsetBy(dx: -self.frame.width/2 + defaultCamera.position.x , dy: -self.frame.height/2))
+        }
     }
     
     
@@ -118,6 +128,7 @@ class GameScene: SKScene {
     override func didFinishUpdate() {
         
         defaultCamera.position = CGPoint(x: characterNode.position.x, y: 0)
+        updateEdgeLoop()
         
         if gameStarted {
             ensureAllObstaclesHaveNodes()
