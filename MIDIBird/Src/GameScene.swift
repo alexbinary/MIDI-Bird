@@ -11,6 +11,14 @@ struct Obstacle {
 }
 
 
+enum GameState {
+    
+    case ready
+    case started
+    case gameover
+}
+
+
 class GameScene: SKScene {
     
     
@@ -27,11 +35,9 @@ class GameScene: SKScene {
     var characterNode: SKShapeNode!
     var obstacleNodes: [SKNode] = []
     
-    var gameStarted = false
-    
     let mainContactTestBitMask: UInt32 = 1
     
-    var shouldResetGameOnNextUpdate = false
+    var gameState: GameState = .ready
     
     
     override func didMove(to view: SKView) {
@@ -49,7 +55,7 @@ class GameScene: SKScene {
         
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             
-            if self.gameStarted {
+            if self.gameState == .started {
                 
                 self.spawnNewObstacle()
             }
@@ -115,9 +121,9 @@ class GameScene: SKScene {
     
     func onMIDIInput(_ velocity: UInt) {
         
-        if characterNode.physicsBody?.isDynamic == false {
+        if self.gameState == .ready {
             characterNode.physicsBody?.isDynamic = true
-            gameStarted = true
+            self.gameState = .started
             return
         }
         
@@ -128,13 +134,13 @@ class GameScene: SKScene {
     
     override func didFinishUpdate() {
         
-        if shouldResetGameOnNextUpdate {
+        if self.gameState == .gameover {
+            
             characterNode.position = CGPoint(x: 0, y: self.frame.height/2)
             characterNode.physicsBody?.velocity = CGVector(dx: characterNode.physicsBody!.velocity.dx, dy: 0)
             clearObstacleNodes()
             characterNode.physicsBody?.isDynamic = false
-            shouldResetGameOnNextUpdate = false
-            gameStarted = false
+            self.gameState = .ready
         }
     }
     
@@ -183,6 +189,6 @@ extension GameScene: SKPhysicsContactDelegate {
     
     func didBegin(_ contact: SKPhysicsContact) {
             
-        shouldResetGameOnNextUpdate = true
+        self.gameState = .gameover
     }
 }
