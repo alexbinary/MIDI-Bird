@@ -72,11 +72,8 @@ class GameScene: SKScene {
     
     func createObstacle() -> Obstacle {
         
-        let openingSizeFraction = Double.random(in: minObstacleSize.fraction...maxObstacleSize.fraction)
-        let openingPositionFraction = Double.random(in: 25%.fraction...75%.fraction)
-        
-        let obstacle = Obstacle(openingSize: Percent(fraction: openingSizeFraction),
-                                openingPosition: Percent(fraction: openingPositionFraction))
+        let obstacle = Obstacle(openingSize: .random(in: minObstacleSize...maxObstacleSize),
+                                openingPosition: .random(in: 25%...75%))
         
         return obstacle
     }
@@ -133,9 +130,8 @@ class GameScene: SKScene {
             
             self.enableCharacterGravity(true)
             self.gameState = .started
-        }
-        
-        if self.gameState == .started {
+            
+        } else if self.gameState == .started {
             
             self.resetCharacterVelocity()
             self.applyCharacterImpulse(with: velocity)
@@ -233,5 +229,16 @@ extension GameScene: SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
             
         self.gameState = .gameover
+    }
+}
+
+
+
+extension Percent {
+    
+    
+    static func random(in range: ClosedRange<Percent>) -> Percent {
+        
+        return Percent(fraction: Double.random(in: range.lowerBound.fraction...range.upperBound.fraction))
     }
 }
