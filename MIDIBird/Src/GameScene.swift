@@ -6,8 +6,8 @@ import Percent
 
 struct Obstacle {
     
-    let openingSize: CGFloat
-    let openingPosition: CGFloat
+    let openingSize: Percent
+    let openingPosition: Percent
 }
 
 
@@ -61,10 +61,7 @@ class GameScene: SKScene {
         let openingSizeFraction = Double.random(in: minObstacleSize.fraction...maxObstacleSize.fraction)
         let openingPositionFraction = Double.random(in: (-25%.fraction)...25%.fraction)
         
-        let openingSize = self.frame.height * CGFloat(openingSizeFraction)
-        let openingPosition = self.frame.height * CGFloat(openingPositionFraction)
-        
-        let newObstacle = Obstacle(openingSize: openingSize, openingPosition: openingPosition)
+        let newObstacle = Obstacle(openingSize: Percent(fraction: openingSizeFraction), openingPosition: Percent(fraction: openingPositionFraction))
         
         return newObstacle
     }
@@ -143,8 +140,8 @@ class GameScene: SKScene {
     
     func createNode(for obstacle: Obstacle) -> SKNode {
         
-        let opening = obstacle.openingSize
-        let position = CGPoint(x: 0, y: obstacle.openingPosition)
+        let opening = self.frame.height * CGFloat(obstacle.openingSize.fraction)
+        let position = CGPoint(x: 0, y: self.frame.height * CGFloat(obstacle.openingPosition.fraction))
         
         let rootNode = SKNode()
         
