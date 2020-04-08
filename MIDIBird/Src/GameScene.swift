@@ -90,15 +90,6 @@ class GameScene: SKScene {
     }
     
     
-    func redrawObstacles() {
-        
-        self.removeChildren(in: [SKNode](obstacleNodesByObstacleId.values))
-        obstacleNodesByObstacleId.removeAll()
-        
-        ensureAllObstaclesHaveNodes()
-    }
-    
-    
     func ensureAllObstaclesHaveNodes() {
         
         obstacles.forEach { obstacle in
