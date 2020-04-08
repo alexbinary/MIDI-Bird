@@ -6,8 +6,8 @@ import Percent
 
 struct Obstacle {
     
-    let position: CGPoint
-    let opening: CGFloat
+    let openingSize: CGFloat
+    let openingPosition: CGFloat
 }
 
 
@@ -58,15 +58,13 @@ class GameScene: SKScene {
     
     func createObstacle() -> Obstacle {
         
-        let xPosition = self.frame.width/2 + obstacleSpacing
+        let openingSizeFraction = Double.random(in: minObstacleSize.fraction...maxObstacleSize.fraction)
+        let openingPositionFraction = Double.random(in: (-25%.fraction)...25%.fraction)
         
-        let openingFraction = Double.random(in: minObstacleSize.fraction...maxObstacleSize.fraction)
-        let positionFraction = Double.random(in: (-25%.fraction)...25%.fraction)
+        let openingSize = self.frame.height * CGFloat(openingSizeFraction)
+        let openingPosition = self.frame.height * CGFloat(openingPositionFraction)
         
-        let yPosition = self.frame.height * CGFloat(positionFraction)
-        let openingSize = self.frame.height * CGFloat(openingFraction)
-        
-        let newObstacle = Obstacle(position: CGPoint(x: xPosition, y: yPosition), opening: openingSize)
+        let newObstacle = Obstacle(openingSize: openingSize, openingPosition: openingPosition)
         
         return newObstacle
     }
@@ -81,8 +79,10 @@ class GameScene: SKScene {
     
     func spawnNewObstacle() {
         
+        let obstacleXPosition = self.frame.width/2 + obstacleSpacing
+        
         let obstacle = self.createObstacle()
-        let node = self.createNode(for: obstacle)
+        let node = self.createNode(for: obstacle, at: obstacleXPosition)
         
         node.position = CGPoint(x: 0, y: self.frame.height/2)
         node.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
@@ -141,10 +141,10 @@ class GameScene: SKScene {
     }
     
     
-    func createNode(for obstacle: Obstacle) -> SKNode {
+    func createNode(for obstacle: Obstacle, at xPosition: CGFloat) -> SKNode {
         
-        let opening = obstacle.opening
-        let position = obstacle.position
+        let opening = obstacle.openingSize
+        let position = CGPoint(x: xPosition, y: obstacle.openingPosition)
         
         let rootNode = SKNode()
         
