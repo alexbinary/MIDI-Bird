@@ -20,6 +20,13 @@ enum GameState: Equatable {
 }
 
 
+struct ObstaclesParameter {
+    
+    let openingSizeRange: ClosedRange<Percent>
+    let openingPositionRange: ClosedRange<Percent>
+}
+
+
 class GameScene: SKScene {
     
     
@@ -46,7 +53,19 @@ class GameScene: SKScene {
     var sceneViewPortHorizon: ClosedRange<CGFloat> { (-self.frame.width/2)...(+self.frame.width/2) }
     var obstacleLivingRegion: ClosedRange<CGFloat> { self.sceneViewPortHorizon.extended(by: 100) }
     
+    let obstaclesPerLevel = 20
+    
     var scoreLabelNode: SKLabelNode! = nil
+    
+    var currentLevel: Int = 0 {
+        didSet {
+            DispatchQueue.main.async {
+                guard self.scoreLabelNode != nil else { return }
+                self.updateScoreLabel()
+            }
+        }
+    }
+    
     var currentScore: Int = 0 {
         didSet {
             DispatchQueue.main.async {
@@ -77,6 +96,7 @@ class GameScene: SKScene {
         self.addChild(self.characterNode)
 
         self.scoreLabelNode = SKLabelNode()
+        self.scoreLabelNode.numberOfLines = 0
         self.scoreLabelNode.fontColor = .white
         self.scoreLabelNode.verticalAlignmentMode = .top
         self.scoreLabelNode.horizontalAlignmentMode = .right
@@ -115,7 +135,11 @@ class GameScene: SKScene {
     
     func updateScoreLabel() {
         
-        self.scoreLabelNode.text = "\(self.currentScore) / \(self.highScore)"
+        self.scoreLabelNode.text = """
+                    Level: \(self.currentLevel)
+                    Score: \(self.currentScore)
+                    Highest score: \(self.highScore)
+                    """
     }
     
     
@@ -128,12 +152,25 @@ class GameScene: SKScene {
     
     func spawnNewObstacle(xPositionOfPreviousObstacle: CGFloat?) {
         
-        guard case .started(let numberOfObstaclesPassed) = self.gameState else { return }
+        let level = self.currentLevel
+        
+        let levelConfigs: [ObstaclesParameter] = [
+            ObstaclesParameter(openingSizeRange: 80%...90%, openingPositionRange: 40%...60%),
+            ObstaclesParameter(openingSizeRange: 70%...80%, openingPositionRange: 40%...60%),
+            ObstaclesParameter(openingSizeRange: 60%...70%, openingPositionRange: 40%...60%),
+            ObstaclesParameter(openingSizeRange: 50%...60%, openingPositionRange: 40%...60%),
+            ObstaclesParameter(openingSizeRange: 40%...50%, openingPositionRange: 40%...60%),
+            ObstaclesParameter(openingSizeRange: 30%...40%, openingPositionRange: 30%...70%),
+            ObstaclesParameter(openingSizeRange: 20%...30%, openingPositionRange: 20%...80%),
+            ObstaclesParameter(openingSizeRange: 10%...20%, openingPositionRange: 10%...90%),
+        ]
+        
+        let config = level < levelConfigs.count ? levelConfigs[level] : levelConfigs.last ?? ObstaclesParameter(openingSizeRange: 10%...90%, openingPositionRange: 40%...60%)
         
         let obstacleStandardSpacing: CGFloat = 400
         
-        let obstacleOpeningSize = Percent.random(in: 40%...80%)
-        let obstacleOpeningPosition = Percent.random(in: 25%...75%)
+        let obstacleOpeningSize = Percent.random(in: config.openingSizeRange)
+        let obstacleOpeningPosition = Percent.random(in: config.openingPositionRange)
         let obstacleDistanceFromPreviousObstacle = obstacleStandardSpacing
         
         let obstacleXPosition = xPositionOfPreviousObstacle == nil ? (self.sceneViewPortHorizon.upperBound + self.obstacleWidth) : (xPositionOfPreviousObstacle! + obstacleDistanceFromPreviousObstacle)
@@ -156,6 +193,8 @@ class GameScene: SKScene {
         if self.currentScore > self.highScore {
             self.highScore = self.currentScore
         }
+        
+        self.currentLevel = Int(numberOfObstaclesPassed)/Int(self.obstaclesPerLevel)
     }
     
     
