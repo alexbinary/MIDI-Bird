@@ -53,7 +53,7 @@ class GameScene: SKScene {
     var sceneViewPortHorizon: ClosedRange<CGFloat> { (-self.frame.width/2)...(+self.frame.width/2) }
     var obstacleLivingRegion: ClosedRange<CGFloat> { self.sceneViewPortHorizon.extended(by: 100) }
     
-    let obstaclesPerLevel = 20
+    let obstaclesPerLevel = 5
     
     var scoreLabelNode: SKLabelNode! = nil
     
@@ -62,6 +62,9 @@ class GameScene: SKScene {
             DispatchQueue.main.async {
                 guard self.scoreLabelNode != nil else { return }
                 self.updateScoreLabel()
+            }
+            if self.currentLevel > self.highestLevel {
+                self.highestLevel = self.currentLevel
             }
         }
     }
@@ -72,20 +75,34 @@ class GameScene: SKScene {
                 guard self.scoreLabelNode != nil else { return }
                 self.updateScoreLabel()
             }
+            if self.currentScore > self.highestScore {
+                self.highestScore = self.currentScore
+            }
         }
     }
     
-    var highScore: Int = 0 {
+    var highestLevel: Int = 0 {
         didSet {
             DispatchQueue.main.async {
                 guard self.scoreLabelNode != nil else { return }
                 self.updateScoreLabel()
             }
-            self.persistHighScore()
+            self.persistHighestLevel()
         }
     }
     
-    let highScorePersistanceKey = "highScore"
+    var highestScore: Int = 0 {
+        didSet {
+            DispatchQueue.main.async {
+                guard self.scoreLabelNode != nil else { return }
+                self.updateScoreLabel()
+            }
+            self.persistHighestScore()
+        }
+    }
+    
+    let highestLevelPersistanceKey = "highestLevel"
+    let highestScorePersistanceKey = "highestScore"
     
     
     override func didMove(to view: SKView) {
@@ -115,30 +132,48 @@ class GameScene: SKScene {
                                                to: CGPoint(x: +self.frame.width/2, y: 0))
         self.physicsBody!.categoryBitMask = self.gameoverPhysicsBodyCategoryBitMask
         
-        self.loadHighScore()
+        self.loadHighestScore()
+        self.loadHighestLevel()
     }
     
     
-    func loadHighScore() {
+    func loadHighestScore() {
         
-        if let score = UserDefaults.standard.value(forKey: self.highScorePersistanceKey) as? Int {
-            self.highScore = score
+        if let score = UserDefaults.standard.value(forKey: self.highestScorePersistanceKey) as? Int {
+            self.highestScore = score
         }
     }
     
     
-    func persistHighScore() {
+    func loadHighestLevel() {
         
-        UserDefaults.standard.set(self.highScore, forKey: self.highScorePersistanceKey)
+        if let level = UserDefaults.standard.value(forKey: self.highestLevelPersistanceKey) as? Int {
+            self.highestLevel = level
+        }
+    }
+    
+    
+    func persistHighestScore() {
+        
+        UserDefaults.standard.set(self.highestScore, forKey: self.highestScorePersistanceKey)
+    }
+    
+    
+    func persistHighestLevel() {
+        
+        UserDefaults.standard.set(self.highestLevel, forKey: self.highestLevelPersistanceKey)
     }
     
     
     func updateScoreLabel() {
         
         self.scoreLabelNode.text = """
+                    
                     Level: \(self.currentLevel)
                     Score: \(self.currentScore)
-                    Highest score: \(self.highScore)
+                    
+                    Highest level: \(self.highestLevel)
+                    Highest score: \(self.highestScore)
                     """
     }
     
@@ -181,20 +216,6 @@ class GameScene: SKScene {
         node.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
         self.addChild(node)
         register(obstacleNode: node)
-    }
-    
-    
-    func updateScore() {
-        
-        guard case .started(let numberOfObstaclesPassed) = self.gameState else { return }
-        
-        self.currentScore = numberOfObstaclesPassed
-        
-        if self.currentScore > self.highScore {
-            self.highScore = self.currentScore
-        }
-        
-        self.currentLevel = Int(numberOfObstaclesPassed)/Int(self.obstaclesPerLevel)
     }
     
     
@@ -265,7 +286,9 @@ class GameScene: SKScene {
         self.enableCharacterGravity(false)
         
         self.gameState = .ready
+        
         self.currentScore = 0
+        self.currentLevel = 0
     }
     
     
@@ -392,7 +415,9 @@ extension GameScene: SKPhysicsContactDelegate {
                 
                 self.gameState = .started(numberOfObstaclesPassed: numberOfObstaclesPassed + 1)
                 
-                self.updateScore()
+                self.currentLevel = Int(numberOfObstaclesPassed + 1)/Int(self.obstaclesPerLevel)
+                
+                self.currentScore += 1
                 
             } else if categoryBitMasks.contains(self.gameoverPhysicsBodyCategoryBitMask) {
 
