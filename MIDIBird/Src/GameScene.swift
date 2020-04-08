@@ -82,14 +82,13 @@ class GameScene: SKScene {
     func spawnNewObstacle() {
         
         let obstacle = self.createObstacle()
-        let node = createObstacleNode(position: obstacle.position, opening: obstacle.opening)
+        let node = self.createNode(for: obstacle)
         
         node.position = CGPoint(x: 0, y: self.frame.height/2)
         node.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
         
         self.addChild(node)
-        
-        obstacleNodes.append(node)
+        self.obstacleNodes.append(node)
     }
     
     
@@ -142,7 +141,10 @@ class GameScene: SKScene {
     }
     
     
-    func createObstacleNode(position: CGPoint, opening: CGFloat) -> SKNode {
+    func createNode(for obstacle: Obstacle) -> SKNode {
+        
+        let opening = obstacle.opening
+        let position = obstacle.position
         
         let rootNode = SKNode()
         
