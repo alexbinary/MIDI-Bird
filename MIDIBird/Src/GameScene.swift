@@ -61,9 +61,10 @@ class GameScene: SKScene {
         let openingSizeFraction = Double.random(in: minObstacleSize.fraction...maxObstacleSize.fraction)
         let openingPositionFraction = Double.random(in: (-25%.fraction)...25%.fraction)
         
-        let newObstacle = Obstacle(openingSize: Percent(fraction: openingSizeFraction), openingPosition: Percent(fraction: openingPositionFraction))
+        let obstacle = Obstacle(openingSize: Percent(fraction: openingSizeFraction),
+                                openingPosition: Percent(fraction: openingPositionFraction))
         
-        return newObstacle
+        return obstacle
     }
     
     
@@ -81,7 +82,7 @@ class GameScene: SKScene {
         let obstacle = self.createObstacle()
         let node = self.createNode(for: obstacle)
         
-        node.position = CGPoint(x: obstacleXPosition, y: self.frame.height/2)
+        node.position = CGPoint(x: obstacleXPosition, y: 0)
         node.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
         
         self.addChild(node)
@@ -150,13 +151,13 @@ class GameScene: SKScene {
         let bottomNode = createPhysicsRectangleWithRect(CGRect(x: -obstacleWidth/2, y: -opening/2 - height, width: obstacleWidth, height: self.frame.height/2 - opening/2 + position.y))
         bottomNode.physicsBody!.isDynamic = false
         bottomNode.physicsBody?.contactTestBitMask = mainContactTestBitMask
-        bottomNode.position = position
+        bottomNode.position = CGPoint(x: position.x, y: position.y + self.frame.height/2)
         rootNode.addChild(bottomNode)
         
         let topNode = createPhysicsRectangleWithRect(CGRect(x: -obstacleWidth/2, y: opening/2, width: obstacleWidth, height: self.frame.height/2 - opening/2 - position.y))
         topNode.physicsBody!.isDynamic = false
         topNode.physicsBody?.contactTestBitMask = mainContactTestBitMask
-        topNode.position = position
+        topNode.position = CGPoint(x: position.x, y: position.y + self.frame.height/2)
         rootNode.addChild(topNode)
         
         return rootNode
