@@ -56,7 +56,7 @@ class GameScene: SKScene {
         }
     }
     
-    func generateNewObstacle() -> Obstacle {
+    func createObstacle() -> Obstacle {
         
         let xPosition = self.frame.width/2 + obstacleSpacing
         
@@ -81,8 +81,15 @@ class GameScene: SKScene {
     
     func spawnNewObstacle() {
         
-        let obstacle = self.generateNewObstacle()
-        obstacleNodes.append(addObstacleNode(position: obstacle.position, opening: obstacle.opening))
+        let obstacle = self.createObstacle()
+        let node = createObstacleNode(position: obstacle.position, opening: obstacle.opening)
+        
+        node.position = CGPoint(x: 0, y: self.frame.height/2)
+        node.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
+        
+        self.addChild(node)
+        
+        obstacleNodes.append(node)
     }
     
     
@@ -135,7 +142,7 @@ class GameScene: SKScene {
     }
     
     
-    func addObstacleNode(position: CGPoint, opening: CGFloat) -> SKNode {
+    func createObstacleNode(position: CGPoint, opening: CGFloat) -> SKNode {
         
         let rootNode = SKNode()
         
@@ -152,12 +159,6 @@ class GameScene: SKScene {
         topNode.physicsBody?.contactTestBitMask = mainContactTestBitMask
         topNode.position = position
         rootNode.addChild(topNode)
-        
-        self.addChild(rootNode)
-        
-        rootNode.position = CGPoint(x: rootNode.position.x, y: rootNode.position.y + self.frame.height/2)
-        
-        rootNode.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
         
         return rootNode
     }
