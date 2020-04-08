@@ -34,13 +34,16 @@ class GameScene: SKScene {
     let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
     
     var characterNode: SKNode!
-    var obstacleNodes: Set<SKNode> = []
+    var obstacleNodesRightMostFirst: [SKNode] = []
     
     let mainContactTestBitMask: UInt32 = 1
     
     var gameState: GameState! = nil
     
     var characterDefaultPosition: CGPoint { CGPoint(x: 0, y: self.frame.height/2) }
+    
+    var sceneViewPortHorizonLeft: CGFloat { -self.frame.width/2 }
+    var sceneViewPortHorizonRight: CGFloat { +self.frame.width/2 }
     
     
     override func didMove(to view: SKView) {
@@ -60,14 +63,6 @@ class GameScene: SKScene {
         
         self.physicsBody = SKPhysicsBody(edgeFrom: CGPoint(x: -self.frame.width/2, y: 0),
                                                to: CGPoint(x: +self.frame.width/2, y: 0))
-        
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            
-            if self.gameState == .started {
-                
-                self.spawnNewObstacle()
-            }
-        }
     }
     
     
@@ -82,14 +77,14 @@ class GameScene: SKScene {
     
     func clearObstacleNodes() {
         
-        self.removeChildren(in: [SKNode](obstacleNodes))
-        obstacleNodes.removeAll()
+        self.removeChildren(in: self.obstacleNodesRightMostFirst)
+        self.obstacleNodesRightMostFirst.removeAll()
     }
     
     
-    func spawnNewObstacle() {
+    func spawnNewObstacle(xPositionOfPreviousObstacle: CGFloat?) {
         
-        let obstacleXPosition = self.frame.width/2 + obstacleSpacing
+        let obstacleXPosition = xPositionOfPreviousObstacle == nil ? (self.sceneViewPortHorizonRight + self.obstacleWidth) : (xPositionOfPreviousObstacle! + self.obstacleSpacing)
         
         let obstacle = self.createObstacle()
         let node = self.createNode(for: obstacle)
@@ -98,7 +93,7 @@ class GameScene: SKScene {
         node.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
         
         self.addChild(node)
-        self.obstacleNodes.insert(node)
+        self.obstacleNodesRightMostFirst.insert(node, at: 0)
     }
     
     
@@ -184,10 +179,18 @@ class GameScene: SKScene {
             
         } else if self.gameState == .started {
             
-            self.obstacleNodes.filter { $0.position.x < -self.frame.width/2 }.forEach {
-                
-                self.obstacleNodes.remove($0)
-                $0.removeFromParent()
+            if let leftMostObstacleNode = self.obstacleNodesRightMostFirst.last {
+                if leftMostObstacleNode.position.x < self.sceneViewPortHorizonLeft {
+                    self.obstacleNodesRightMostFirst.popLast()!.removeFromParent()
+                }
+            }
+            
+            if let rightMostObstacleNode = self.obstacleNodesRightMostFirst.first {
+                if rightMostObstacleNode.position.x < self.sceneViewPortHorizonRight {
+                    self.spawnNewObstacle(xPositionOfPreviousObstacle: rightMostObstacleNode.position.x)
+                }
+            } else {
+                self.spawnNewObstacle(xPositionOfPreviousObstacle: nil)
             }
         }
     }
