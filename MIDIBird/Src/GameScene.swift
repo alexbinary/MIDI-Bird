@@ -29,8 +29,7 @@ class GameScene: SKScene {
     let obstacleWidth: CGFloat = 20
     let obstacleSpacing: CGFloat = 400
     
-    let minObstacleSize = 10%
-    let maxObstacleSize = 50%
+    let obstacleSizeRange = 10%...50%
     
     let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
     
@@ -71,9 +70,10 @@ class GameScene: SKScene {
         }
     }
     
+    
     func createObstacle() -> Obstacle {
-        
-        let obstacle = Obstacle(openingSize: .random(in: minObstacleSize...maxObstacleSize),
+    
+        let obstacle = Obstacle(openingSize: .random(in: self.obstacleSizeRange),
                                 openingPosition: .random(in: 25%...75%))
         
         return obstacle
@@ -190,16 +190,19 @@ class GameScene: SKScene {
         let relativeBottomHeight = obstacle.openingPosition.fraction - obstacle.openingSize.fraction/2.0
         let relativeTopHeight = (1 - obstacle.openingPosition.fraction) - obstacle.openingSize.fraction/2.0
         
+        let absoluteBottomHeight = self.frame.height * CGFloat(relativeBottomHeight)
+        let absoluteTopHeight = self.frame.height * CGFloat(relativeTopHeight)
+        
         let bottomNode = createObstaclePartWithRect(CGRect(x: -obstacleWidth/2,
                                                            y: 0,
                                                            width: obstacleWidth,
-                                                           height: self.frame.height * CGFloat(relativeBottomHeight)))
+                                                           height: absoluteBottomHeight))
         bottomNode.position = CGPoint(x: 0, y: 0)
         
         let topNode = createObstaclePartWithRect(CGRect(x: -obstacleWidth/2,
-                                                        y: 0,
+                                                        y: -absoluteTopHeight,
                                                         width: obstacleWidth,
-                                                        height: -self.frame.height * CGFloat(relativeTopHeight)))
+                                                        height: absoluteTopHeight))
         topNode.position = CGPoint(x: 0, y: self.frame.height)
         
         let rootNode = SKNode()
