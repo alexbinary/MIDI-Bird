@@ -115,7 +115,6 @@ class GameScene: SKScene {
         characterNode.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         characterNode.physicsBody?.isDynamic = false
         characterNode.physicsBody?.contactTestBitMask = mainContactTestBitMask
-        characterNode.run(SKAction.repeatForever(SKAction.moveBy(x: playerHorizontalSpeed, y: 0, duration: 1)))
         self.addChild(characterNode)
     }
     
@@ -188,6 +187,8 @@ class GameScene: SKScene {
         rootNode.addChild(topNode)
         
         self.addChild(rootNode)
+        
+        rootNode.run(SKAction.repeatForever(SKAction.moveBy(x: -playerHorizontalSpeed, y: 0, duration: 1)))
         
         return rootNode
     }
