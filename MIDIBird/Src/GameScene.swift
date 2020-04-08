@@ -8,7 +8,6 @@ struct Obstacle {
     
     let position: CGPoint
     let opening: CGFloat
-    let id: UUID = UUID()
 }
 
 
@@ -26,7 +25,7 @@ class GameScene: SKScene {
     let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
     
     var characterNode: SKShapeNode!
-    var obstacleNodesByObstacleId: [UUID: SKNode] = [:]
+    var obstacleNodes: [SKNode] = []
     
     var gameStarted = false
     var obstacles: [Obstacle] = []
@@ -79,15 +78,16 @@ class GameScene: SKScene {
     
     func clearObstacles() {
         
-        self.removeChildren(in: [SKNode](obstacleNodesByObstacleId.values))
-        obstacleNodesByObstacleId.removeAll()
+        self.removeChildren(in: obstacleNodes)
+        obstacleNodes.removeAll()
         
         obstacles.removeAll()
     }
     
     
     func createNode(for obstacle: Obstacle) {
-        obstacleNodesByObstacleId[obstacle.id] = addObstacleNode(position: obstacle.position, opening: obstacle.opening)
+        
+        obstacleNodes.append(addObstacleNode(position: obstacle.position, opening: obstacle.opening))
     }
     
     
