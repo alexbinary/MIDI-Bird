@@ -90,16 +90,6 @@ class GameScene: SKScene {
     }
     
     
-    func ensureAllObstaclesHaveNodes() {
-        
-        obstacles.forEach { obstacle in
-            if obstacleNodesByObstacleId[obstacle.id] == nil {
-                createNode(for: obstacle)
-            }
-        }
-    }
-    
-    
     func createNode(for obstacle: Obstacle) {
         obstacleNodesByObstacleId[obstacle.id] = addObstacleNode(position: obstacle.position, opening: obstacle.opening)
     }
@@ -153,10 +143,6 @@ class GameScene: SKScene {
         }
         
         updateEdgeLoop()
-        
-        if gameStarted {
-            ensureAllObstaclesHaveNodes()
-        }
     }
     
     
