@@ -34,7 +34,10 @@ class GameScene: SKScene {
     let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
     
     var characterNode: SKNode!
-    var obstacleNodesRightMostFirst: [SKNode] = []
+    var obstacleNodesFromRightToLeft: [SKNode] = []
+    
+    var leftMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.last }
+    var rightMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.first }
     
     let mainContactTestBitMask: UInt32 = 1
     
@@ -42,8 +45,8 @@ class GameScene: SKScene {
     
     var characterDefaultPosition: CGPoint { CGPoint(x: 0, y: self.frame.height/2) }
     
-    var sceneViewPortHorizonLeft: CGFloat { -self.frame.width/2 }
-    var sceneViewPortHorizonRight: CGFloat { +self.frame.width/2 }
+    var sceneViewPortHorizon: ClosedRange<CGFloat> { (-self.frame.width/2)...(+self.frame.width/2) }
+    var obstacleLivingRegion: ClosedRange<CGFloat> { self.sceneViewPortHorizon.extended(by: 100) }
     
     
     override func didMove(to view: SKView) {
@@ -77,14 +80,14 @@ class GameScene: SKScene {
     
     func clearObstacleNodes() {
         
-        self.removeChildren(in: self.obstacleNodesRightMostFirst)
-        self.obstacleNodesRightMostFirst.removeAll()
+        self.removeChildren(in: self.obstacleNodesFromRightToLeft)
+        self.obstacleNodesFromRightToLeft.removeAll()
     }
     
     
     func spawnNewObstacle(xPositionOfPreviousObstacle: CGFloat?) {
         
-        let obstacleXPosition = xPositionOfPreviousObstacle == nil ? (self.sceneViewPortHorizonRight + self.obstacleWidth) : (xPositionOfPreviousObstacle! + self.obstacleSpacing)
+        let obstacleXPosition = xPositionOfPreviousObstacle == nil ? (self.sceneViewPortHorizon.upperBound + self.obstacleWidth) : (xPositionOfPreviousObstacle! + self.obstacleSpacing)
         
         let obstacle = self.createObstacle()
         let node = self.createNode(for: obstacle)
@@ -93,7 +96,19 @@ class GameScene: SKScene {
         node.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
         
         self.addChild(node)
-        self.obstacleNodesRightMostFirst.insert(node, at: 0)
+        register(obstacleNode: node)
+    }
+    
+    
+    func register(obstacleNode node: SKNode) {
+        
+        self.obstacleNodesFromRightToLeft.insert(node, at: 0)
+    }
+    
+    
+    func removeLeftMostObstacleNode() {
+        
+        self.obstacleNodesFromRightToLeft.popLast()?.removeFromParent()
     }
     
     
@@ -179,14 +194,14 @@ class GameScene: SKScene {
             
         } else if self.gameState == .started {
             
-            if let leftMostObstacleNode = self.obstacleNodesRightMostFirst.last {
-                if leftMostObstacleNode.position.x < self.sceneViewPortHorizonLeft {
-                    self.obstacleNodesRightMostFirst.popLast()!.removeFromParent()
+            if let leftMostObstacleNode = self.leftMostObstacleNode {
+                if leftMostObstacleNode.position.x < self.obstacleLivingRegion.lowerBound {
+                    self.removeLeftMostObstacleNode()
                 }
             }
             
-            if let rightMostObstacleNode = self.obstacleNodesRightMostFirst.first {
-                if rightMostObstacleNode.position.x < self.sceneViewPortHorizonRight {
+            if let rightMostObstacleNode = rightMostObstacleNode {
+                if rightMostObstacleNode.position.x < self.obstacleLivingRegion.upperBound {
                     self.spawnNewObstacle(xPositionOfPreviousObstacle: rightMostObstacleNode.position.x)
                 }
             } else {
@@ -255,5 +270,16 @@ extension Percent {
     static func random(in range: ClosedRange<Percent>) -> Percent {
         
         return Percent(fraction: Double.random(in: range.lowerBound.fraction...range.upperBound.fraction))
+    }
+}
+
+
+
+extension ClosedRange where Bound == CGFloat {
+    
+    
+    func extended(by value: CGFloat) -> ClosedRange<CGFloat> {
+        
+        (self.lowerBound - value)...(self.upperBound + value)
     }
 }
