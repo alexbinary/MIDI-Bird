@@ -47,6 +47,8 @@ class GameScene: SKScene {
         
         physicsWorld.contactDelegate = self
         
+        self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
+        
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             
             if self.gameStarted {
@@ -72,12 +74,6 @@ class GameScene: SKScene {
         obstacles.insert(newObstacle, at: 0)
         
         return newObstacle
-    }
-    
-    
-    func updateEdgeLoop() {
-        
-        self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
     }
     
     
@@ -141,8 +137,6 @@ class GameScene: SKScene {
             shouldResetGameOnNextUpdate = false
             gameStarted = false
         }
-        
-        updateEdgeLoop()
     }
     
     
