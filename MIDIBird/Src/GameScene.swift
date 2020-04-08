@@ -84,16 +84,10 @@ class GameScene: SKScene {
     }
     
     
-    func createNode(for obstacle: Obstacle) {
-        
-        obstacleNodes.append(addObstacleNode(position: obstacle.position, opening: obstacle.opening))
-    }
-    
-    
     func spawnNewObstacle() {
         
-        let newObstacle = self.generateNewObstacle()
-        self.createNode(for: newObstacle)
+        let obstacle = self.generateNewObstacle()
+        obstacleNodes.append(addObstacleNode(position: obstacle.position, opening: obstacle.opening))
     }
     
     
