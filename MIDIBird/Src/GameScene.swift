@@ -37,9 +37,7 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         
-        defaultCamera = SKCameraNode()
-        self.addChild(defaultCamera)
-        self.camera = defaultCamera
+        self.anchorPoint = CGPoint(x: 0.5, y: 0)
         
         initCharacter()
         connectToMIDIDevice()
@@ -47,11 +45,20 @@ class GameScene: SKScene {
         view.showsPhysics = true
         
         physicsWorld.contactDelegate = self
+        
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            
+            if self.gameStarted {
+                
+                let newObstacle = self.generateNewObstacle()
+                self.createNode(for: newObstacle)
+            }
+        }
     }
     
     func generateNewObstacle() -> Obstacle {
         
-        let position = defaultCamera.position.x + self.frame.width/2 + (obstacles.isEmpty ? 0 : obstacleSpacing)
+        let position = self.frame.width/2 + obstacleSpacing
         
         let newObstacle = Obstacle(position: CGPoint(x: position, y: CGFloat.random(in: -self.frame.height/4...self.frame.height/4)), opening: CGFloat(CGFloat.random(in: minObstacleSize...maxObstacleSize)))
         obstacles.insert(newObstacle, at: 0)
@@ -70,9 +77,7 @@ class GameScene: SKScene {
     
     func updateEdgeLoop() {
         
-        if defaultCamera != nil {
-            self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame.offsetBy(dx: -self.frame.width/2 + defaultCamera.position.x , dy: -self.frame.height/2))
-        }
+        self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
     }
     
     
@@ -115,6 +120,7 @@ class GameScene: SKScene {
         characterNode.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         characterNode.physicsBody?.isDynamic = false
         characterNode.physicsBody?.contactTestBitMask = mainContactTestBitMask
+        characterNode.position = CGPoint(x: 0, y: self.frame.height/2)
         self.addChild(characterNode)
     }
     
@@ -147,7 +153,7 @@ class GameScene: SKScene {
     override func didFinishUpdate() {
         
         if shouldResetGameOnNextUpdate {
-            characterNode.position = CGPoint.zero
+            characterNode.position = CGPoint(x: 0, y: self.frame.height/2)
             characterNode.physicsBody?.velocity = CGVector(dx: characterNode.physicsBody!.velocity.dx, dy: 0)
             clearObstacles()
             characterNode.physicsBody?.isDynamic = false
@@ -155,15 +161,10 @@ class GameScene: SKScene {
             gameStarted = false
         }
         
-        defaultCamera.position = CGPoint(x: characterNode.position.x, y: 0)
         updateEdgeLoop()
         
         if gameStarted {
             ensureAllObstaclesHaveNodes()
-            while obstacles.isEmpty || obstacleNodesByObstacleId[obstacles.first!.id]!.isVisibleBy(defaultCamera) {
-                let newObstacle = generateNewObstacle()
-                createNode(for: newObstacle)
-            }
         }
     }
     
@@ -188,6 +189,8 @@ class GameScene: SKScene {
         
         self.addChild(rootNode)
         
+        rootNode.position = CGPoint(x: rootNode.position.x, y: rootNode.position.y + self.frame.height/2)
+        
         rootNode.run(SKAction.repeatForever(SKAction.moveBy(x: -playerHorizontalSpeed, y: 0, duration: 1)))
         
         return rootNode
@@ -203,17 +206,6 @@ class GameScene: SKScene {
         return node
     }
 }
-
-
-extension SKNode {
-    
-    
-    func isVisibleBy(_ camera: SKCameraNode) -> Bool {
-        
-        return ([self]+self.children).contains(where: { camera.contains($0) })
-    }
-}
-
 
 extension GameScene: SKPhysicsContactDelegate {
     
