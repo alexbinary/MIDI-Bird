@@ -92,6 +92,7 @@
 		29C363EC23F14EA2003C4DF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29C363F823F15948003C4DF4 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		29C3641A23F15C77003C4DF4 /* MIKMIDI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MIKMIDI.xcodeproj; path = Frameworks/MIKMIDI/Framework/MIKMIDI.xcodeproj; sourceTree = "<group>"; };
+		29CA5AD6243DEA3A00266963 /* MIDIBird_iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MIDIBird_iOS.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +149,7 @@
 		29C363DD23F14EA0003C4DF4 /* MIDIBird_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				29CA5AD6243DEA3A00266963 /* MIDIBird_iOS.entitlements */,
 				29C363EC23F14EA2003C4DF4 /* Info.plist */,
 				29C363E723F14EA2003C4DF4 /* Assets.xcassets */,
 				29C363F623F15642003C4DF4 /* Src */,
@@ -545,6 +547,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MIDIBird_iOS/MIDIBird_iOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2N6DR3R99K;
 				INFOPLIST_FILE = MIDIBird_iOS/Info.plist;
@@ -554,6 +557,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "io.bintz.MIDIBird-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -563,6 +567,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MIDIBird_iOS/MIDIBird_iOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2N6DR3R99K;
 				INFOPLIST_FILE = MIDIBird_iOS/Info.plist;
@@ -572,6 +577,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "io.bintz.MIDIBird-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
