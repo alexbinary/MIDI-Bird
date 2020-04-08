@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		299F90D7243DF26200F1D493 /* Percent in Frameworks */ = {isa = PBXBuildFile; productRef = 299F90D6243DF26200F1D493 /* Percent */; };
 		29C363DF23F14EA0003C4DF4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363DE23F14EA0003C4DF4 /* AppDelegate.swift */; };
 		29C363E123F14EA0003C4DF4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363E023F14EA0003C4DF4 /* SceneDelegate.swift */; };
 		29C363E323F14EA0003C4DF4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363E223F14EA0003C4DF4 /* ViewController.swift */; };
@@ -75,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				299F90D7243DF26200F1D493 /* Percent in Frameworks */,
 				29C3642A23F15CB5003C4DF4 /* MIKMIDI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -158,6 +160,9 @@
 			dependencies = (
 			);
 			name = MIDIBird;
+			packageProductDependencies = (
+				299F90D6243DF26200F1D493 /* Percent */,
+			);
 			productName = MIDIBird_iOS;
 			productReference = 29C363DC23F14EA0003C4DF4 /* MIDIBird.app */;
 			productType = "com.apple.product-type.application";
@@ -186,6 +191,9 @@
 				Base,
 			);
 			mainGroup = 29C3639C23F14B87003C4DF4;
+			packageReferences = (
+				299F90D5243DF26200F1D493 /* XCRemoteSwiftPackageReference "Percentage" */,
+			);
 			productRefGroup = 29C363A623F14B87003C4DF4 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
@@ -448,6 +456,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		299F90D5243DF26200F1D493 /* XCRemoteSwiftPackageReference "Percentage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/Percentage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		299F90D6243DF26200F1D493 /* Percent */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 299F90D5243DF26200F1D493 /* XCRemoteSwiftPackageReference "Percentage" */;
+			productName = Percent;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 29C3639D23F14B87003C4DF4 /* Project object */;
 }

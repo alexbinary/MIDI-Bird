@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Percent",
+        "repositoryURL": "https://github.com/sindresorhus/Percentage.git",
+        "state": {
+          "branch": null,
+          "revision": "3f646da009f38184ac49f900faef7fb8d9ce3bf0",
+          "version": "0.2.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,6 +1,7 @@
 
 import SpriteKit
 import MIKMIDI
+import Percent
 
 
 struct Obstacle {
@@ -15,15 +16,15 @@ class GameScene: SKScene {
     
     
     let inputSensibility: CGFloat = 0.2 // Newton.seconds per input velocity unit
-    let playerHorizontalSpeed: CGFloat = 200 // points per second
+    let scrollingSpeed: CGFloat = 200 // points per second
     let obstacleWidth: CGFloat = 20
     let obstacleSpacing: CGFloat = 400
-    let minObstacleSize: CGFloat = 200
-    let maxObstacleSize: CGFloat = 500
+    
+    let minObstacleSize = 10%
+    let maxObstacleSize = 50%
     
     let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
     
-    var defaultCamera: SKCameraNode!
     var characterNode: SKShapeNode!
     var obstacleNodesByObstacleId: [UUID: SKNode] = [:]
     
@@ -58,9 +59,16 @@ class GameScene: SKScene {
     
     func generateNewObstacle() -> Obstacle {
         
-        let position = self.frame.width/2 + obstacleSpacing
+        let xPosition = self.frame.width/2 + obstacleSpacing
         
-        let newObstacle = Obstacle(position: CGPoint(x: position, y: CGFloat.random(in: -self.frame.height/4...self.frame.height/4)), opening: CGFloat(CGFloat.random(in: minObstacleSize...maxObstacleSize)))
+        let openingFraction = Double.random(in: minObstacleSize.fraction...maxObstacleSize.fraction)
+        let positionFraction = Double.random(in: (-25%.fraction)...25%.fraction)
+        
+        let yPosition = self.frame.height * CGFloat(positionFraction)
+        let openingSize = self.frame.height * CGFloat(openingFraction)
+        
+        let newObstacle = Obstacle(position: CGPoint(x: xPosition, y: yPosition), opening: openingSize)
+        
         obstacles.insert(newObstacle, at: 0)
         
         return newObstacle
@@ -191,7 +199,7 @@ class GameScene: SKScene {
         
         rootNode.position = CGPoint(x: rootNode.position.x, y: rootNode.position.y + self.frame.height/2)
         
-        rootNode.run(SKAction.repeatForever(SKAction.moveBy(x: -playerHorizontalSpeed, y: 0, duration: 1)))
+        rootNode.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
         
         return rootNode
     }
