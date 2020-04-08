@@ -18,8 +18,8 @@ class GameScene: SKScene {
     let playerHorizontalSpeed: CGFloat = 200 // points per second
     let obstacleWidth: CGFloat = 20
     let obstacleSpacing: CGFloat = 400
-    let minObstacleSize: CGFloat = 40
-    let maxObstacleSize: CGFloat = 200
+    let minObstacleSize: CGFloat = 200
+    let maxObstacleSize: CGFloat = 500
     
     let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
     
