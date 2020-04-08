@@ -12,10 +12,10 @@ struct Obstacle {
 }
 
 
-enum GameState {
+enum GameState: Equatable {
     
     case ready
-    case started
+    case started(numberOfObstaclesPassed: Int)
     case gameover
 }
 
@@ -27,10 +27,7 @@ class GameScene: SKScene {
     let scrollingSpeed: CGFloat = 200 // points per second
     
     let obstacleWidth: CGFloat = 20
-    let obstacleSpacing: CGFloat = 400
-    
-    let obstacleSizeRange = 40%...80%
-    
+
     let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
     
     var characterNode: SKNode!
@@ -39,7 +36,8 @@ class GameScene: SKScene {
     var leftMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.last }
     var rightMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.first }
     
-    let mainContactTestBitMask: UInt32 = 1
+    let gameoverPhysicsBodyCategoryBitMask: UInt32 = 0b10
+    let successPhysicsBodyCategoryBitMask: UInt32 = 0b01
     
     var gameState: GameState! = nil
     
@@ -48,6 +46,17 @@ class GameScene: SKScene {
     var sceneViewPortHorizon: ClosedRange<CGFloat> { (-self.frame.width/2)...(+self.frame.width/2) }
     var obstacleLivingRegion: ClosedRange<CGFloat> { self.sceneViewPortHorizon.extended(by: 100) }
     
+    var scoreLabelNode: SKLabelNode! = nil
+    var currentScore: Int = 0 {
+        didSet {
+            print(self.currentScore)
+            DispatchQueue.main.async {
+                guard let label = self.scoreLabelNode else { return }
+                label.text = "\(self.currentScore)"
+            }
+        }
+    }
+    
     
     override func didMove(to view: SKView) {
         
@@ -55,6 +64,13 @@ class GameScene: SKScene {
         
         self.characterNode = self.createCharacterNode()
         self.addChild(self.characterNode)
+
+        self.scoreLabelNode = SKLabelNode()
+        self.scoreLabelNode.fontColor = .white
+        self.scoreLabelNode.verticalAlignmentMode = .top
+        self.scoreLabelNode.horizontalAlignmentMode = .right
+        self.scoreLabelNode.position = CGPoint(x: self.frame.width/2 - 100, y: self.frame.height - 100)
+        self.addChild(self.scoreLabelNode)
         
         self.resetGame()
         
@@ -66,15 +82,7 @@ class GameScene: SKScene {
         
         self.physicsBody = SKPhysicsBody(edgeFrom: CGPoint(x: -self.frame.width/2, y: 0),
                                                to: CGPoint(x: +self.frame.width/2, y: 0))
-    }
-    
-    
-    func createObstacle() -> Obstacle {
-    
-        let obstacle = Obstacle(openingSize: .random(in: self.obstacleSizeRange),
-                                openingPosition: .random(in: 25%...75%))
-        
-        return obstacle
+        self.physicsBody!.categoryBitMask = self.gameoverPhysicsBodyCategoryBitMask
     }
     
     
@@ -87,16 +95,30 @@ class GameScene: SKScene {
     
     func spawnNewObstacle(xPositionOfPreviousObstacle: CGFloat?) {
         
-        let obstacleXPosition = xPositionOfPreviousObstacle == nil ? (self.sceneViewPortHorizon.upperBound + self.obstacleWidth) : (xPositionOfPreviousObstacle! + self.obstacleSpacing)
+        guard case .started(let numberOfObstaclesPassed) = self.gameState else { return }
         
-        let obstacle = self.createObstacle()
+        let obstacleStandardSpacing: CGFloat = 400
+        
+        let obstacleOpeningSize = Percent.random(in: 40%...80%)
+        let obstacleOpeningPosition = Percent.random(in: 25%...75%)
+        let obstacleDistanceFromPreviousObstacle = obstacleStandardSpacing
+        
+        let obstacleXPosition = xPositionOfPreviousObstacle == nil ? (self.sceneViewPortHorizon.upperBound + self.obstacleWidth) : (xPositionOfPreviousObstacle! + obstacleDistanceFromPreviousObstacle)
+        let obstacle = Obstacle(openingSize: obstacleOpeningSize, openingPosition: obstacleOpeningPosition)
+        
         let node = self.createNode(for: obstacle)
-        
         node.position = CGPoint(x: obstacleXPosition, y: 0)
         node.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
-        
         self.addChild(node)
         register(obstacleNode: node)
+    }
+    
+    
+    func updateScore() {
+        
+        guard case .started(let numberOfObstaclesPassed) = self.gameState else { return }
+        
+        self.currentScore = numberOfObstaclesPassed
     }
     
     
@@ -117,7 +139,9 @@ class GameScene: SKScene {
         let node = SKShapeNode(circleOfRadius: 10)
         node.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         node.physicsBody?.isDynamic = false
-        node.physicsBody?.contactTestBitMask = mainContactTestBitMask
+
+        node.physicsBody?.collisionBitMask = self.gameoverPhysicsBodyCategoryBitMask
+        node.physicsBody?.contactTestBitMask = self.gameoverPhysicsBodyCategoryBitMask | self.successPhysicsBodyCategoryBitMask
         
         return node
     }
@@ -137,15 +161,21 @@ class GameScene: SKScene {
     
     func onMIDIInput(_ velocity: UInt) {
         
-        if self.gameState == .ready {
+        switch self.gameState {
+            
+        case .ready:
             
             self.enableCharacterGravity(true)
-            self.gameState = .started
+            self.gameState = .started(numberOfObstaclesPassed: 0)
             
-        } else if self.gameState == .started {
+        case .started(_):
             
             self.resetCharacterVelocity()
             self.applyCharacterImpulse(with: velocity)
+            
+        default:
+            
+            return
         }
     }
     
@@ -159,6 +189,7 @@ class GameScene: SKScene {
         self.enableCharacterGravity(false)
         
         self.gameState = .ready
+        self.currentScore = 0
     }
     
     
@@ -188,12 +219,10 @@ class GameScene: SKScene {
     
     override func didFinishUpdate() {
         
-        if self.gameState == .gameover {
-            
-            self.resetGame()
-            
-        } else if self.gameState == .started {
-            
+        switch self.gameState {
+        
+        case .started(_):
+         
             if let leftMostObstacleNode = self.leftMostObstacleNode {
                 if leftMostObstacleNode.position.x < self.obstacleLivingRegion.lowerBound {
                     self.removeLeftMostObstacleNode()
@@ -207,6 +236,14 @@ class GameScene: SKScene {
             } else {
                 self.spawnNewObstacle(xPositionOfPreviousObstacle: nil)
             }
+            
+        case .gameover:
+            
+            self.resetGame()
+            
+        default:
+            
+            return
         }
     }
     
@@ -215,24 +252,36 @@ class GameScene: SKScene {
         
         let relativeBottomHeight = obstacle.openingPosition.fraction - obstacle.openingSize.fraction/2.0
         let relativeTopHeight = (1 - obstacle.openingPosition.fraction) - obstacle.openingSize.fraction/2.0
+        let relativeMiddleHeight = 1 - relativeBottomHeight - relativeTopHeight
         
         let absoluteBottomHeight = self.frame.height * CGFloat(relativeBottomHeight)
         let absoluteTopHeight = self.frame.height * CGFloat(relativeTopHeight)
+        let absoluteMiddleHeight = self.frame.height * CGFloat(relativeMiddleHeight)
         
         let bottomNode = createObstaclePartWithRect(CGRect(x: -obstacleWidth/2,
                                                            y: 0,
                                                            width: obstacleWidth,
                                                            height: absoluteBottomHeight))
         bottomNode.position = CGPoint(x: 0, y: 0)
+        bottomNode.physicsBody!.categoryBitMask = self.gameoverPhysicsBodyCategoryBitMask
+        
+        let middleNode = createObstaclePartWithRect(CGRect(x: -obstacleWidth/2,
+                                                           y: 0,
+                                                           width: obstacleWidth,
+                                                           height: absoluteMiddleHeight))
+        middleNode.position = CGPoint(x: 0, y: absoluteBottomHeight)
+        middleNode.physicsBody!.categoryBitMask = self.successPhysicsBodyCategoryBitMask
         
         let topNode = createObstaclePartWithRect(CGRect(x: -obstacleWidth/2,
                                                         y: -absoluteTopHeight,
                                                         width: obstacleWidth,
                                                         height: absoluteTopHeight))
         topNode.position = CGPoint(x: 0, y: self.frame.height)
+        topNode.physicsBody!.categoryBitMask = self.gameoverPhysicsBodyCategoryBitMask
         
         let rootNode = SKNode()
         rootNode.addChild(bottomNode)
+        rootNode.addChild(middleNode)
         rootNode.addChild(topNode)
         
         return rootNode
@@ -247,7 +296,6 @@ class GameScene: SKScene {
         
         node.physicsBody = SKPhysicsBody(rectangleOf: rect.size, center: CGPoint(x: rect.midX, y: rect.midY))
         node.physicsBody!.isDynamic = false
-        node.physicsBody!.contactTestBitMask = mainContactTestBitMask
         
         return node
     }
@@ -257,8 +305,28 @@ extension GameScene: SKPhysicsContactDelegate {
     
     
     func didBegin(_ contact: SKPhysicsContact) {
+        
+        let categoryBitMasks = [contact.bodyA, contact.bodyB].map { $0.categoryBitMask }
+        
+        switch self.gameState {
             
-        self.gameState = .gameover
+        case .started(let numberOfObstaclesPassed):
+         
+            if categoryBitMasks.contains(self.successPhysicsBodyCategoryBitMask) {
+                
+                self.gameState = .started(numberOfObstaclesPassed: numberOfObstaclesPassed + 1)
+                
+                self.updateScore()
+                
+            } else if categoryBitMasks.contains(self.gameoverPhysicsBodyCategoryBitMask) {
+
+                self.gameState = .gameover
+            }
+            
+        default:
+            
+            return
+        }
     }
 }
 
