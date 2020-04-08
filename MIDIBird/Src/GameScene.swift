@@ -29,12 +29,12 @@ class GameScene: SKScene {
     let obstacleWidth: CGFloat = 20
     let obstacleSpacing: CGFloat = 400
     
-    let obstacleSizeRange = 10%...50%
+    let obstacleSizeRange = 40%...80%
     
     let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
     
     var characterNode: SKNode!
-    var obstacleNodes: [SKNode] = []
+    var obstacleNodes: Set<SKNode> = []
     
     let mainContactTestBitMask: UInt32 = 1
     
@@ -82,7 +82,7 @@ class GameScene: SKScene {
     
     func clearObstacleNodes() {
         
-        self.removeChildren(in: obstacleNodes)
+        self.removeChildren(in: [SKNode](obstacleNodes))
         obstacleNodes.removeAll()
     }
     
@@ -98,7 +98,7 @@ class GameScene: SKScene {
         node.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
         
         self.addChild(node)
-        self.obstacleNodes.append(node)
+        self.obstacleNodes.insert(node)
     }
     
     
@@ -181,6 +181,14 @@ class GameScene: SKScene {
         if self.gameState == .gameover {
             
             self.resetGame()
+            
+        } else if self.gameState == .started {
+            
+            self.obstacleNodes.filter { $0.position.x < -self.frame.width/2 }.forEach {
+                
+                self.obstacleNodes.remove($0)
+                $0.removeFromParent()
+            }
         }
     }
     
