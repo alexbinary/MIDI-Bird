@@ -4,6 +4,7 @@ import MIKMIDI
 import Percent
 
 
+
 struct Obstacle {
     
     let openingSize: Percent
@@ -24,6 +25,7 @@ class GameScene: SKScene {
     
     let inputSensibility: CGFloat = 0.2 // Newton.seconds per input velocity unit
     let scrollingSpeed: CGFloat = 200 // points per second
+    
     let obstacleWidth: CGFloat = 20
     let obstacleSpacing: CGFloat = 400
     
@@ -32,19 +34,25 @@ class GameScene: SKScene {
     
     let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
     
-    var characterNode: SKShapeNode!
+    var characterNode: SKNode!
     var obstacleNodes: [SKNode] = []
     
     let mainContactTestBitMask: UInt32 = 1
     
-    var gameState: GameState = .ready
+    var gameState: GameState! = nil
+    
+    var characterDefaultPosition: CGPoint { CGPoint(x: 0, y: self.frame.height/2) }
     
     
     override func didMove(to view: SKView) {
         
         self.anchorPoint = CGPoint(x: 0.5, y: 0)
         
-        initCharacter()
+        self.characterNode = self.createCharacterNode()
+        self.addChild(self.characterNode)
+        
+        self.resetGame()
+        
         connectToMIDIDevice()
         
         view.showsPhysics = true
@@ -96,14 +104,14 @@ class GameScene: SKScene {
     }
     
     
-    func initCharacter() {
+    func createCharacterNode() -> SKNode {
         
-        characterNode = SKShapeNode(circleOfRadius: 10)
-        characterNode.physicsBody = SKPhysicsBody(circleOfRadius: 10)
-        characterNode.physicsBody?.isDynamic = false
-        characterNode.physicsBody?.contactTestBitMask = mainContactTestBitMask
-        characterNode.position = CGPoint(x: 0, y: self.frame.height/2)
-        self.addChild(characterNode)
+        let node = SKShapeNode(circleOfRadius: 10)
+        node.physicsBody = SKPhysicsBody(circleOfRadius: 10)
+        node.physicsBody?.isDynamic = false
+        node.physicsBody?.contactTestBitMask = mainContactTestBitMask
+        
+        return node
     }
     
     
@@ -122,13 +130,52 @@ class GameScene: SKScene {
     func onMIDIInput(_ velocity: UInt) {
         
         if self.gameState == .ready {
-            characterNode.physicsBody?.isDynamic = true
+            
+            self.enableCharacterGravity(true)
             self.gameState = .started
-            return
         }
         
-        characterNode.physicsBody!.velocity = CGVector(dx: characterNode.physicsBody!.velocity.dx, dy: 0)
-        characterNode.physicsBody!.applyImpulse(CGVector(dx: 0, dy: CGFloat(velocity) * inputSensibility))
+        if self.gameState == .started {
+            
+            self.resetCharacterVelocity()
+            self.applyCharacterImpulse(with: velocity)
+        }
+    }
+    
+    
+    func resetGame() {
+        
+        self.clearObstacleNodes()
+        
+        self.resetCharacterPositionToDefaultPosition()
+        self.resetCharacterVelocity()
+        self.enableCharacterGravity(false)
+        
+        self.gameState = .ready
+    }
+    
+    
+    func applyCharacterImpulse(with velocity: UInt) {
+        
+        self.characterNode.physicsBody!.applyImpulse(CGVector(dx: 0, dy: CGFloat(velocity) * inputSensibility))
+    }
+    
+    
+    func resetCharacterPositionToDefaultPosition() {
+        
+        self.characterNode.position = self.characterDefaultPosition
+    }
+    
+    
+    func resetCharacterVelocity() {
+        
+        self.characterNode.physicsBody!.velocity = CGVector.zero
+    }
+    
+    
+    func enableCharacterGravity(_ characterGravityEnabled: Bool) {
+        
+        self.characterNode.physicsBody!.isDynamic = characterGravityEnabled
     }
     
     
@@ -136,11 +183,7 @@ class GameScene: SKScene {
         
         if self.gameState == .gameover {
             
-            characterNode.position = CGPoint(x: 0, y: self.frame.height/2)
-            characterNode.physicsBody?.velocity = CGVector(dx: characterNode.physicsBody!.velocity.dx, dy: 0)
-            clearObstacleNodes()
-            characterNode.physicsBody?.isDynamic = false
-            self.gameState = .ready
+            self.resetGame()
         }
     }
     
