@@ -15,7 +15,7 @@ struct Obstacle {
 enum GameState: Equatable {
     
     case ready
-    case started(numberOfObstaclesPassed: Int)
+    case started(numberOfObstaclesPassed: UInt)
     case gameover
 }
 
@@ -24,6 +24,13 @@ struct ObstaclesParameter {
     
     let openingSizeRange: ClosedRange<Percent>
     let openingPositionRange: ClosedRange<Percent>
+}
+
+
+struct CheckPoint {
+    
+    let numberOfObstaclesPassed: UInt
+    let score: Int
 }
 
 
@@ -54,6 +61,8 @@ class GameScene: SKScene {
     var obstacleLivingRegion: ClosedRange<CGFloat> { self.sceneViewPortHorizon.extended(by: 100) }
     
     let obstaclesPerLevel = 5
+    
+    var mostRecentCheckPoint: CheckPoint?
     
     var scoreLabelNode: SKLabelNode! = nil
     
@@ -264,6 +273,7 @@ class GameScene: SKScene {
             
             self.enableCharacterGravity(true)
             self.gameState = .started(numberOfObstaclesPassed: 0)
+            self.reloadMostRecentCheckPoint()
             
         case .started(_):
             
@@ -289,6 +299,15 @@ class GameScene: SKScene {
         
         self.currentScore = 0
         self.currentLevel = 0
+    }
+    
+    
+    func reloadMostRecentCheckPoint() {
+        
+        guard let checkPoint = self.mostRecentCheckPoint else { return }
+        
+        self.gameState = .started(numberOfObstaclesPassed: checkPoint.numberOfObstaclesPassed)
+        self.currentScore = checkPoint.score
     }
     
     
@@ -413,11 +432,15 @@ extension GameScene: SKPhysicsContactDelegate {
          
             if categoryBitMasks.contains(self.successPhysicsBodyCategoryBitMask) {
                 
-                self.gameState = .started(numberOfObstaclesPassed: numberOfObstaclesPassed + 1)
+                let newNumberOfObstaclesPassed = numberOfObstaclesPassed + 1
                 
-                self.currentLevel = Int(numberOfObstaclesPassed + 1)/Int(self.obstaclesPerLevel)
+                self.gameState = .started(numberOfObstaclesPassed: newNumberOfObstaclesPassed)
+                
+                self.currentLevel = Int(newNumberOfObstaclesPassed)/Int(self.obstaclesPerLevel)
                 
                 self.currentScore += 1
+                
+                self.mostRecentCheckPoint = CheckPoint(numberOfObstaclesPassed: newNumberOfObstaclesPassed, score: self.currentScore)
                 
             } else if categoryBitMasks.contains(self.gameoverPhysicsBodyCategoryBitMask) {
 
