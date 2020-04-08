@@ -59,7 +59,8 @@ class GameScene: SKScene {
         
         physicsWorld.contactDelegate = self
         
-        self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
+        self.physicsBody = SKPhysicsBody(edgeFrom: CGPoint(x: -self.frame.width/2, y: 0),
+                                               to: CGPoint(x: +self.frame.width/2, y: 0))
         
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             
