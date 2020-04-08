@@ -28,7 +28,6 @@ class GameScene: SKScene {
     var obstacleNodes: [SKNode] = []
     
     var gameStarted = false
-    var obstacles: [Obstacle] = []
     
     let mainContactTestBitMask: UInt32 = 1
     
@@ -69,18 +68,14 @@ class GameScene: SKScene {
         
         let newObstacle = Obstacle(position: CGPoint(x: xPosition, y: yPosition), opening: openingSize)
         
-        obstacles.insert(newObstacle, at: 0)
-        
         return newObstacle
     }
     
     
-    func clearObstacles() {
+    func clearObstacleNodes() {
         
         self.removeChildren(in: obstacleNodes)
         obstacleNodes.removeAll()
-        
-        obstacles.removeAll()
     }
     
     
@@ -132,7 +127,7 @@ class GameScene: SKScene {
         if shouldResetGameOnNextUpdate {
             characterNode.position = CGPoint(x: 0, y: self.frame.height/2)
             characterNode.physicsBody?.velocity = CGVector(dx: characterNode.physicsBody!.velocity.dx, dy: 0)
-            clearObstacles()
+            clearObstacleNodes()
             characterNode.physicsBody?.isDynamic = false
             shouldResetGameOnNextUpdate = false
             gameStarted = false
