@@ -59,7 +59,7 @@ class GameScene: SKScene {
     func createObstacle() -> Obstacle {
         
         let openingSizeFraction = Double.random(in: minObstacleSize.fraction...maxObstacleSize.fraction)
-        let openingPositionFraction = Double.random(in: (-25%.fraction)...25%.fraction)
+        let openingPositionFraction = Double.random(in: 25%.fraction...75%.fraction)
         
         let obstacle = Obstacle(openingSize: Percent(fraction: openingSizeFraction),
                                 openingPosition: Percent(fraction: openingPositionFraction))
@@ -141,34 +141,38 @@ class GameScene: SKScene {
     
     func createNode(for obstacle: Obstacle) -> SKNode {
         
-        let opening = self.frame.height * CGFloat(obstacle.openingSize.fraction)
-        let position = CGPoint(x: 0, y: self.frame.height * CGFloat(obstacle.openingPosition.fraction))
+        let relativeBottomHeight = obstacle.openingPosition.fraction - obstacle.openingSize.fraction/2.0
+        let relativeTopHeight = (1 - obstacle.openingPosition.fraction) - obstacle.openingSize.fraction/2.0
+        
+        let bottomNode = createObstaclePartWithRect(CGRect(x: -obstacleWidth/2,
+                                                           y: 0,
+                                                           width: obstacleWidth,
+                                                           height: self.frame.height * CGFloat(relativeBottomHeight)))
+        bottomNode.position = CGPoint(x: 0, y: 0)
+        
+        let topNode = createObstaclePartWithRect(CGRect(x: -obstacleWidth/2,
+                                                        y: 0,
+                                                        width: obstacleWidth,
+                                                        height: -self.frame.height * CGFloat(relativeTopHeight)))
+        topNode.position = CGPoint(x: 0, y: self.frame.height)
         
         let rootNode = SKNode()
-        
-        let height = self.frame.height/2 - opening/2 + position.y
-        
-        let bottomNode = createPhysicsRectangleWithRect(CGRect(x: -obstacleWidth/2, y: -opening/2 - height, width: obstacleWidth, height: self.frame.height/2 - opening/2 + position.y))
-        bottomNode.physicsBody!.isDynamic = false
-        bottomNode.physicsBody?.contactTestBitMask = mainContactTestBitMask
-        bottomNode.position = CGPoint(x: position.x, y: position.y + self.frame.height/2)
         rootNode.addChild(bottomNode)
-        
-        let topNode = createPhysicsRectangleWithRect(CGRect(x: -obstacleWidth/2, y: opening/2, width: obstacleWidth, height: self.frame.height/2 - opening/2 - position.y))
-        topNode.physicsBody!.isDynamic = false
-        topNode.physicsBody?.contactTestBitMask = mainContactTestBitMask
-        topNode.position = CGPoint(x: position.x, y: position.y + self.frame.height/2)
         rootNode.addChild(topNode)
         
         return rootNode
     }
     
     
-    func createPhysicsRectangleWithRect(_ rect: CGRect) -> SKNode {
+    func createObstaclePartWithRect(_ rect: CGRect) -> SKNode {
         
         let path = CGPath(rect: rect, transform: nil)
+        
         let node = SKShapeNode(path: path)
+        
         node.physicsBody = SKPhysicsBody(rectangleOf: rect.size, center: CGPoint(x: rect.midX, y: rect.midY))
+        node.physicsBody!.isDynamic = false
+        node.physicsBody!.contactTestBitMask = mainContactTestBitMask
         
         return node
     }
