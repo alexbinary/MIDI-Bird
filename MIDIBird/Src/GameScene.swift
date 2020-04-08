@@ -49,10 +49,18 @@ class GameScene: SKScene {
     var scoreLabelNode: SKLabelNode! = nil
     var currentScore: Int = 0 {
         didSet {
-            print(self.currentScore)
             DispatchQueue.main.async {
-                guard let label = self.scoreLabelNode else { return }
-                label.text = "\(self.currentScore)"
+                guard self.scoreLabelNode != nil else { return }
+                self.updateScoreLabel()
+            }
+        }
+    }
+    
+    var highScore: Int = 0 {
+        didSet {
+            DispatchQueue.main.async {
+                guard self.scoreLabelNode != nil else { return }
+                self.updateScoreLabel()
             }
         }
     }
@@ -83,6 +91,12 @@ class GameScene: SKScene {
         self.physicsBody = SKPhysicsBody(edgeFrom: CGPoint(x: -self.frame.width/2, y: 0),
                                                to: CGPoint(x: +self.frame.width/2, y: 0))
         self.physicsBody!.categoryBitMask = self.gameoverPhysicsBodyCategoryBitMask
+    }
+    
+    
+    func updateScoreLabel() {
+        
+        self.scoreLabelNode.text = "\(self.currentScore) / \(self.highScore)"
     }
     
     
@@ -119,6 +133,10 @@ class GameScene: SKScene {
         guard case .started(let numberOfObstaclesPassed) = self.gameState else { return }
         
         self.currentScore = numberOfObstaclesPassed
+        
+        if self.currentScore > self.highScore {
+            self.highScore = self.currentScore
+        }
     }
     
     
