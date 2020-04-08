@@ -75,14 +75,6 @@ class GameScene: SKScene {
     }
     
     
-    override func didChangeSize(_ oldSize: CGSize) {
-        
-        redrawObstacles()
-        
-        updateEdgeLoop()
-    }
-    
-    
     func updateEdgeLoop() {
         
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
