@@ -62,8 +62,11 @@ class GameScene: SKScene {
                 guard self.scoreLabelNode != nil else { return }
                 self.updateScoreLabel()
             }
+            self.persistHighScore()
         }
     }
+    
+    let highScorePersistanceKey = "highScore"
     
     
     override func didMove(to view: SKView) {
@@ -91,6 +94,22 @@ class GameScene: SKScene {
         self.physicsBody = SKPhysicsBody(edgeFrom: CGPoint(x: -self.frame.width/2, y: 0),
                                                to: CGPoint(x: +self.frame.width/2, y: 0))
         self.physicsBody!.categoryBitMask = self.gameoverPhysicsBodyCategoryBitMask
+        
+        self.loadHighScore()
+    }
+    
+    
+    func loadHighScore() {
+        
+        if let score = UserDefaults.standard.value(forKey: self.highScorePersistanceKey) as? Int {
+            self.highScore = score
+        }
+    }
+    
+    
+    func persistHighScore() {
+        
+        UserDefaults.standard.set(self.highScore, forKey: self.highScorePersistanceKey)
     }
     
     
