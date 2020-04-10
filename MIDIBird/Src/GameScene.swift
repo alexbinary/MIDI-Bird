@@ -46,7 +46,7 @@ class GameScene: SKScene {
     var obstacleLivingRegion: ClosedRange<CGFloat> { self.sceneViewPortHorizon.extended(by: 100) }
     
     
-    var characterNode: SKNode!
+    var characterNode: SKNode! = nil
     var obstacleNodesFromRightToLeft: [SKNode] = []
     
     var leftMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.last }
@@ -71,40 +71,37 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         
+        #if DEBUG
+            view.showsPhysics = true
+        #endif
+        
         self.anchorPoint = CGPoint(x: 0.5, y: 0)
         
         self.characterNode = self.createCharacterNode()
         self.addChild(self.characterNode)
 
-        self.scoreLabelNode = SKLabelNode()
-        self.scoreLabelNode.numberOfLines = 0
-        self.scoreLabelNode.fontColor = .white
+        self.scoreLabelNode = self.createScoreLabelNode()
         self.scoreLabelNode.verticalAlignmentMode = .top
         self.scoreLabelNode.horizontalAlignmentMode = .right
         self.scoreLabelNode.position = CGPoint(x: self.frame.width/2 - 100, y: self.frame.height - 100)
         self.addChild(self.scoreLabelNode)
         
-        self.deviceLabelNode = SKLabelNode()
-        self.deviceLabelNode.numberOfLines = 0
-        self.deviceLabelNode.fontColor = .white
+        self.deviceLabelNode = self.createDeviceLabelNode()
         self.deviceLabelNode.verticalAlignmentMode = .top
         self.deviceLabelNode.horizontalAlignmentMode = .right
         self.deviceLabelNode.position = CGPoint(x: self.frame.width/2 - 100, y: 100)
         self.addChild(self.deviceLabelNode)
         
-        self.resetGame()
-        
-        view.showsPhysics = true
-        
-        physicsWorld.contactDelegate = self
-        
-        self.physicsBody = SKPhysicsBody(edgeFrom: CGPoint(x: -self.frame.width/2, y: 0),
-                                               to: CGPoint(x: +self.frame.width/2, y: 0))
+        self.physicsWorld.contactDelegate = self
+        self.physicsBody = SKPhysicsBody(edgeFrom: CGPoint(x: -self.frame.width/2, y: 0), to: CGPoint(x: +self.frame.width/2, y: 0))
         self.physicsBody!.categoryBitMask = self.gameoverPhysicsBodyCategoryBitMask
         
         self.loadHighscore()
+        self.updateScoreLabel()
         
         self.updateDeviceLabel()
+        
+        self.resetGame()
         
         if self.MIDIDevice != nil {
             self.connectToMIDIDevice()
@@ -112,6 +109,47 @@ class GameScene: SKScene {
             self.triggerDeviceSelection()
         }
     }
+    
+    
+    func createCharacterNode() -> SKNode {
+        
+        let node = SKShapeNode(circleOfRadius: 10)
+        
+        node.physicsBody = SKPhysicsBody(circleOfRadius: 10)
+        node.physicsBody!.isDynamic = false
+
+        node.physicsBody!.collisionBitMask = self.gameoverPhysicsBodyCategoryBitMask
+        node.physicsBody!.contactTestBitMask = self.gameoverPhysicsBodyCategoryBitMask | self.successPhysicsBodyCategoryBitMask
+        
+        return node
+    }
+    
+    
+    func createScoreLabelNode() -> SKLabelNode {
+        
+        let labelNode = SKLabelNode()
+        
+        labelNode.numberOfLines = 0
+        labelNode.fontColor = .white
+        
+        return labelNode
+    }
+    
+    
+    func createDeviceLabelNode() -> SKLabelNode {
+        
+        let labelNode = SKLabelNode()
+        
+        labelNode.numberOfLines = 0
+        labelNode.fontColor = .white
+        
+        return labelNode
+    }
+    
+    
+    
+    
+    
     
     
     func updateDeviceLabel() {
@@ -218,19 +256,6 @@ class GameScene: SKScene {
     func removeLeftMostObstacleNode() {
         
         self.obstacleNodesFromRightToLeft.popLast()?.removeFromParent()
-    }
-    
-    
-    func createCharacterNode() -> SKNode {
-        
-        let node = SKShapeNode(circleOfRadius: 10)
-        node.physicsBody = SKPhysicsBody(circleOfRadius: 10)
-        node.physicsBody?.isDynamic = false
-
-        node.physicsBody?.collisionBitMask = self.gameoverPhysicsBodyCategoryBitMask
-        node.physicsBody?.contactTestBitMask = self.gameoverPhysicsBodyCategoryBitMask | self.successPhysicsBodyCategoryBitMask
-        
-        return node
     }
     
     
