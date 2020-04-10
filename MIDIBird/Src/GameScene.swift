@@ -64,7 +64,8 @@ class GameScene: SKScene {
     var highscore: Int = 0
     
     
-    var MIDIDevice: MIKMIDIDevice! = nil
+    var MIDIDevice: MIKMIDIDevice? = nil
+    var MIDIDeviceConnectionToken: Any? = nil
     
     var customDelegate: GameSceneDelegate?
     
@@ -103,9 +104,7 @@ class GameScene: SKScene {
         
         self.resetGame()
         
-        if self.MIDIDevice != nil {
-            self.connectToMIDIDevice()
-        } else {
+        if self.MIDIDevice == nil {
             self.triggerMIDIDeviceSelection()
         }
     }
@@ -172,6 +171,7 @@ class GameScene: SKScene {
     
     func updateMIDIDeviceLabel() {
         
+        guard self.MIDIdeviceLabelNode != nil else { return }
         self.MIDIdeviceLabelNode.text = self.MIDIDevice?.displayName ?? ""
     }
     
@@ -206,9 +206,13 @@ class GameScene: SKScene {
     
     func connectToMIDIDevice() {
         
+        if let token =  self.MIDIDeviceConnectionToken {
+            MIKMIDIDeviceManager.shared.disconnectConnection(forToken: token)
+        }
+        
         let device = self.MIDIDevice!
         
-        try! MIKMIDIDeviceManager.shared.connect(device) { (_, commands) in
+        self.MIDIDeviceConnectionToken = try! MIKMIDIDeviceManager.shared.connect(device) { (_, commands) in
             commands.compactMap { $0 as? MIKMIDINoteOnCommand } .filter { $0.velocity > 0 } .forEach { command in
                 self.onMIDIInput(command.velocity)
             }
