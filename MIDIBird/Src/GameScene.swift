@@ -147,9 +147,27 @@ class GameScene: SKScene {
     }
     
     
+    func loadHighscore() {
+        
+        if let score = UserDefaults.standard.value(forKey: self.highscorePersistanceKey) as? Int {
+            self.highscore = score
+        }
+    }
     
     
+    func persistHighscore() {
+        
+        UserDefaults.standard.set(self.highscore, forKey: self.highscorePersistanceKey)
+    }
     
+    
+    func updateScoreLabel() {
+        
+        self.scoreLabelNode.text = """
+                    Score: \(self.currentScore)
+                    Best: \(self.highscore)
+                    """
+    }
     
     
     func updateDeviceLabel() {
@@ -186,79 +204,6 @@ class GameScene: SKScene {
     }
     
     
-    func loadHighscore() {
-        
-        if let score = UserDefaults.standard.value(forKey: self.highscorePersistanceKey) as? Int {
-            self.highscore = score
-        }
-    }
-    
-    
-    func persistHighscore() {
-        
-        UserDefaults.standard.set(self.highscore, forKey: self.highscorePersistanceKey)
-    }
-    
-    
-    func updateScoreLabel() {
-        
-        self.scoreLabelNode.text = """
-                    Score: \(self.currentScore)
-                    Best: \(self.highscore)
-                    """
-    }
-    
-    
-    func clearObstacleNodes() {
-        
-        self.removeChildren(in: self.obstacleNodesFromRightToLeft)
-        self.obstacleNodesFromRightToLeft.removeAll()
-    }
-    
-    
-    func spawnNewObstacle(xPositionOfPreviousObstacle: CGFloat?) {
-        
-        let numberOfObstaclesGenerated = self.numberOfObstaclesGenerated
-        
-        let reductionAtEachStep: Double = 1.05    // value the factor value is divided by at each step
-        let reductionFactor = Percent(fraction: pow(reductionAtEachStep, -Double(numberOfObstaclesGenerated)))
-        
-        let obstacleOpeningSizeRange = 1%...30%
-        let obstacleOpeningSize = reductionFactor * obstacleOpeningSizeRange.width + obstacleOpeningSizeRange.lowerBound
-        
-        let obstacleOpeningPositionCenter = 50%
-        let obstacleOpeningPositionWindowRange = 0%...40%
-        let obstacleOpeningPositionWindowWidth = (100% - reductionFactor) * obstacleOpeningPositionWindowRange.width + obstacleOpeningPositionWindowRange.lowerBound
-        let obstacleOpeningPosition = Percent.random(in: Percent.range(ofWidth: obstacleOpeningPositionWindowWidth, centeredOn: obstacleOpeningPositionCenter))
-        
-        let obstacleStandardSpacing: CGFloat = 400
-        let obstacleDistanceFromPreviousObstacle = obstacleStandardSpacing
-        
-        let obstacleXPosition = xPositionOfPreviousObstacle == nil ? (self.sceneViewPortHorizon.upperBound + self.obstacleWidth) : (xPositionOfPreviousObstacle! + obstacleDistanceFromPreviousObstacle)
-        let obstacle = Obstacle(openingSize: obstacleOpeningSize, openingPosition: obstacleOpeningPosition)
-        
-        let node = self.createNode(for: obstacle)
-        node.position = CGPoint(x: obstacleXPosition, y: 0)
-        node.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
-        self.addChild(node)
-        register(obstacleNode: node)
-        
-        self.numberOfObstaclesGenerated += 1
-    }
-    
-    
-    func register(obstacleNode node: SKNode) {
-        
-        self.obstacleNodesFromRightToLeft.insert(node, at: 0)
-    }
-    
-    
-    func removeLeftMostObstacleNode() {
-        
-        self.obstacleNodesFromRightToLeft.popLast()?.removeFromParent()
-    }
-    
-    
     func connectToMIDIDevice() {
         
         let device = self.MIDIDevice!
@@ -291,82 +236,34 @@ class GameScene: SKScene {
     }
     
     
-    func startGame() {
+    func spawnNewObstacle(xPositionOfPreviousObstacle: CGFloat?) {
         
-        self.enableCharacterGravity(true)
-        self.gameState = .started
-    }
-    
-    
-    func resetGame() {
+        let numberOfObstaclesGenerated = self.numberOfObstaclesGenerated
         
-        self.clearObstacleNodes()
+        let reductionAtEachStep: Double = 1.05    // value the factor value is divided by at each step
+        let reductionFactor = Percent(fraction: pow(reductionAtEachStep, -Double(numberOfObstaclesGenerated)))
         
-        self.resetCharacterPositionToDefaultPosition()
-        self.resetCharacterVelocity()
-        self.enableCharacterGravity(false)
+        let obstacleOpeningSizeRange = 1%...30%
+        let obstacleOpeningSize = reductionFactor * obstacleOpeningSizeRange.width + obstacleOpeningSizeRange.lowerBound
         
-        self.gameState = .ready
+        let obstacleOpeningPositionCenter = 50%
+        let obstacleOpeningPositionWindowRange = 0%...40%
+        let obstacleOpeningPositionWindowWidth = (100% - reductionFactor) * obstacleOpeningPositionWindowRange.width + obstacleOpeningPositionWindowRange.lowerBound
+        let obstacleOpeningPosition = Percent.random(in: Percent.range(ofWidth: obstacleOpeningPositionWindowWidth, centeredOn: obstacleOpeningPositionCenter))
         
-        self.numberOfObstaclesGenerated = 0
-        self.currentScore = 0
+        let obstacleStandardSpacing: CGFloat = 400
+        let obstacleDistanceFromPreviousObstacle = obstacleStandardSpacing
         
-        self.updateScoreLabel()
-    }
-    
-    
-    func applyCharacterImpulse(with velocity: UInt) {
+        let obstacleXPosition = xPositionOfPreviousObstacle == nil ? (self.sceneViewPortHorizon.upperBound + self.obstacleWidth) : (xPositionOfPreviousObstacle! + obstacleDistanceFromPreviousObstacle)
+        let obstacle = Obstacle(openingSize: obstacleOpeningSize, openingPosition: obstacleOpeningPosition)
         
-        self.characterNode.physicsBody!.applyImpulse(CGVector(dx: 0, dy: CGFloat(velocity) * inputSensibility))
-    }
-    
-    
-    func resetCharacterPositionToDefaultPosition() {
+        let node = self.createNode(for: obstacle)
+        node.position = CGPoint(x: obstacleXPosition, y: 0)
+        node.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
+        self.addChild(node)
+        register(obstacleNode: node)
         
-        self.characterNode.position = self.characterDefaultPosition
-    }
-    
-    
-    func resetCharacterVelocity() {
-        
-        self.characterNode.physicsBody!.velocity = CGVector.zero
-    }
-    
-    
-    func enableCharacterGravity(_ characterGravityEnabled: Bool) {
-        
-        self.characterNode.physicsBody!.isDynamic = characterGravityEnabled
-    }
-    
-    
-    override func didFinishUpdate() {
-        
-        switch self.gameState {
-        
-        case .started:
-         
-            if let leftMostObstacleNode = self.leftMostObstacleNode {
-                if leftMostObstacleNode.position.x < self.obstacleLivingRegion.lowerBound {
-                    self.removeLeftMostObstacleNode()
-                }
-            }
-            
-            if let rightMostObstacleNode = rightMostObstacleNode {
-                if rightMostObstacleNode.position.x < self.obstacleLivingRegion.upperBound {
-                    self.spawnNewObstacle(xPositionOfPreviousObstacle: rightMostObstacleNode.position.x)
-                }
-            } else {
-                self.spawnNewObstacle(xPositionOfPreviousObstacle: nil)
-            }
-            
-        case .gameover:
-            
-            self.resetGame()
-            
-        default:
-            
-            return
-        }
+        self.numberOfObstaclesGenerated += 1
     }
     
     
@@ -423,6 +320,73 @@ class GameScene: SKScene {
     }
     
     
+    func register(obstacleNode node: SKNode) {
+        
+        self.obstacleNodesFromRightToLeft.insert(node, at: 0)
+    }
+    
+    
+    func removeLeftMostObstacleNode() {
+        
+        self.obstacleNodesFromRightToLeft.popLast()?.removeFromParent()
+    }
+    
+    
+    func clearObstacleNodes() {
+        
+        self.removeChildren(in: self.obstacleNodesFromRightToLeft)
+        self.obstacleNodesFromRightToLeft.removeAll()
+    }
+    
+    
+    func startGame() {
+        
+        self.enableCharacterGravity(true)
+        self.gameState = .started
+    }
+    
+    
+    func resetGame() {
+        
+        self.clearObstacleNodes()
+        
+        self.resetCharacterPositionToDefaultPosition()
+        self.resetCharacterVelocity()
+        self.enableCharacterGravity(false)
+        
+        self.gameState = .ready
+        
+        self.numberOfObstaclesGenerated = 0
+        self.currentScore = 0
+        
+        self.updateScoreLabel()
+    }
+    
+    
+    func resetCharacterPositionToDefaultPosition() {
+        
+        self.characterNode.position = self.characterDefaultPosition
+    }
+    
+    
+    func resetCharacterVelocity() {
+        
+        self.characterNode.physicsBody!.velocity = CGVector.zero
+    }
+    
+    
+    func enableCharacterGravity(_ characterGravityEnabled: Bool) {
+        
+        self.characterNode.physicsBody!.isDynamic = characterGravityEnabled
+    }
+    
+    
+    func applyCharacterImpulse(with velocity: UInt) {
+        
+        self.characterNode.physicsBody!.applyImpulse(CGVector(dx: 0, dy: CGFloat(velocity) * inputSensibility))
+    }
+    
+    
     func didCollideWithObstacleOrGround() {
         
         self.gameState = .gameover
@@ -437,7 +401,39 @@ class GameScene: SKScene {
         self.updateScoreLabel()
         self.persistHighscore()
     }
+    
+    
+    override func didFinishUpdate() {
+        
+        switch self.gameState {
+        
+        case .started:
+         
+            if let leftMostObstacleNode = self.leftMostObstacleNode {
+                if leftMostObstacleNode.position.x < self.obstacleLivingRegion.lowerBound {
+                    self.removeLeftMostObstacleNode()
+                }
+            }
+            
+            if let rightMostObstacleNode = rightMostObstacleNode {
+                if rightMostObstacleNode.position.x < self.obstacleLivingRegion.upperBound {
+                    self.spawnNewObstacle(xPositionOfPreviousObstacle: rightMostObstacleNode.position.x)
+                }
+            } else {
+                self.spawnNewObstacle(xPositionOfPreviousObstacle: nil)
+            }
+            
+        case .gameover:
+            
+            self.resetGame()
+            
+        default:
+            
+            return
+        }
+    }
 }
+
 
 extension GameScene: SKPhysicsContactDelegate {
     
@@ -466,6 +462,13 @@ extension GameScene: SKPhysicsContactDelegate {
     }
 }
 
+
+
+protocol GameSceneDelegate {
+    
+    
+    func didTriggerDeviceSelection()
+}
 
 
 extension Percent {
@@ -509,11 +512,4 @@ extension ClosedRange where Bound == Percent {
         
         return self.upperBound - self.lowerBound
     }
-}
-
-
-protocol GameSceneDelegate {
-    
-    
-    func didTriggerDeviceSelection()
 }
