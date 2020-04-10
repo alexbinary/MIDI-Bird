@@ -53,7 +53,7 @@ class GameScene: SKScene {
     var rightMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.first }
     
     var scoreLabelNode: SKLabelNode! = nil
-    var deviceLabelNode: SKLabelNode! = nil
+    var MIDIdeviceLabelNode: SKLabelNode! = nil
     
     
     var gameState: GameState! = nil
@@ -86,11 +86,11 @@ class GameScene: SKScene {
         self.scoreLabelNode.position = CGPoint(x: self.frame.width/2 - 100, y: self.frame.height - 100)
         self.addChild(self.scoreLabelNode)
         
-        self.deviceLabelNode = self.createDeviceLabelNode()
-        self.deviceLabelNode.verticalAlignmentMode = .top
-        self.deviceLabelNode.horizontalAlignmentMode = .right
-        self.deviceLabelNode.position = CGPoint(x: self.frame.width/2 - 100, y: 100)
-        self.addChild(self.deviceLabelNode)
+        self.MIDIdeviceLabelNode = self.createDeviceLabelNode()
+        self.MIDIdeviceLabelNode.verticalAlignmentMode = .top
+        self.MIDIdeviceLabelNode.horizontalAlignmentMode = .right
+        self.MIDIdeviceLabelNode.position = CGPoint(x: self.frame.width/2 - 100, y: 100)
+        self.addChild(self.MIDIdeviceLabelNode)
         
         self.physicsWorld.contactDelegate = self
         self.physicsBody = SKPhysicsBody(edgeFrom: CGPoint(x: -self.frame.width/2, y: 0), to: CGPoint(x: +self.frame.width/2, y: 0))
@@ -99,14 +99,14 @@ class GameScene: SKScene {
         self.loadHighscore()
         self.updateScoreLabel()
         
-        self.updateDeviceLabel()
+        self.updateMIDIDeviceLabel()
         
         self.resetGame()
         
         if self.MIDIDevice != nil {
             self.connectToMIDIDevice()
         } else {
-            self.triggerDeviceSelection()
+            self.triggerMIDIDeviceSelection()
         }
     }
     
@@ -170,9 +170,9 @@ class GameScene: SKScene {
     }
     
     
-    func updateDeviceLabel() {
+    func updateMIDIDeviceLabel() {
         
-        self.deviceLabelNode.text = self.MIDIDevice?.displayName ?? ""
+        self.MIDIdeviceLabelNode.text = self.MIDIDevice?.displayName ?? ""
     }
     
     
@@ -180,25 +180,25 @@ class GameScene: SKScene {
         
         if let touch = touches.first {
             if let node = nodes(at: touch.location(in: self)).first {
-                if node == self.deviceLabelNode {
+                if node == self.MIDIdeviceLabelNode {
                     
-                    self.triggerDeviceSelection()
+                    self.triggerMIDIDeviceSelection()
                 }
             }
         }
     }
     
     
-    func triggerDeviceSelection() {
+    func triggerMIDIDeviceSelection() {
         
         self.isPaused = true
-        self.customDelegate?.didTriggerDeviceSelection()
+        self.customDelegate?.didTriggerMIDIDeviceSelection()
     }
     
     
-    func didSelectDevice() {
+    func didSetMIDIDevice() {
         
-        self.updateDeviceLabel()
+        self.updateMIDIDeviceLabel()
         self.connectToMIDIDevice()
         self.isPaused = false
     }
@@ -467,7 +467,7 @@ extension GameScene: SKPhysicsContactDelegate {
 protocol GameSceneDelegate {
     
     
-    func didTriggerDeviceSelection()
+    func didTriggerMIDIDeviceSelection()
 }
 
 

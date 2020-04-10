@@ -72,6 +72,7 @@ class ViewController: UIViewController {
     func setDevice(_ device: MIKMIDIDevice) {
         
         self.gameScene.MIDIDevice = device
+        self.gameScene.didSetMIDIDevice()
         
         self.lastUsedMIDIDeviceDisplayName = device.displayName
     }
@@ -109,8 +110,6 @@ extension ViewController: UITableViewDelegate {
         
         self.setDevice(device)
         
-        self.gameScene.didSelectDevice()
-        
         self.dismissDeviceSelectionView()
     }
 }
@@ -119,7 +118,7 @@ extension ViewController: UITableViewDelegate {
 extension ViewController: GameSceneDelegate {
     
     
-    func didTriggerDeviceSelection() {
+    func didTriggerMIDIDeviceSelection() {
         
         self.presentDeviceSelectionView()
     }
