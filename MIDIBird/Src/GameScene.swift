@@ -37,39 +37,36 @@ class GameScene: SKScene {
     let gameoverPhysicsBodyCategoryBitMask: UInt32 = 0b10
     let successPhysicsBodyCategoryBitMask: UInt32 = 0b01
     
+    let highscorePersistanceKey = "highscore"
     
-    
-    
-    var customDelegate: GameSceneDelegate?
-    
-    var MIDIDevice: MIKMIDIDevice! = nil
-    
-    
-
-    var characterNode: SKNode!
-    var obstacleNodesFromRightToLeft: [SKNode] = []
-    
-    var leftMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.last }
-    var rightMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.first }
-    
-    
-    
-    var gameState: GameState! = nil
     
     var characterDefaultPosition: CGPoint { CGPoint(x: 0, y: self.frame.height/2) }
     
     var sceneViewPortHorizon: ClosedRange<CGFloat> { (-self.frame.width/2)...(+self.frame.width/2) }
     var obstacleLivingRegion: ClosedRange<CGFloat> { self.sceneViewPortHorizon.extended(by: 100) }
     
-    var numberOfObstaclesGenerated = 0
+    
+    var characterNode: SKNode!
+    var obstacleNodesFromRightToLeft: [SKNode] = []
+    
+    var leftMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.last }
+    var rightMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.first }
     
     var scoreLabelNode: SKLabelNode! = nil
     var deviceLabelNode: SKLabelNode! = nil
     
+    
+    var gameState: GameState! = nil
+    
+    var numberOfObstaclesGenerated: Int = 0
+
     var currentScore: Int = 0
     var highscore: Int = 0
     
-    let highscorePersistanceKey = "highscore"
+    
+    var MIDIDevice: MIKMIDIDevice! = nil
+    
+    var customDelegate: GameSceneDelegate?
     
     
     override func didMove(to view: SKView) {
