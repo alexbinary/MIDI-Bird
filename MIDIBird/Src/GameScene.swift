@@ -12,6 +12,13 @@ struct Obstacle {
 }
 
 
+struct ObstaclesParameter {
+    
+    let openingSizeRange: ClosedRange<Percent>
+    let openingPositionRange: ClosedRange<Percent>
+}
+
+
 enum GameState: Equatable {
     
     case ready
@@ -20,47 +27,32 @@ enum GameState: Equatable {
 }
 
 
-struct ObstaclesParameter {
-    
-    let openingSizeRange: ClosedRange<Percent>
-    let openingPositionRange: ClosedRange<Percent>
-}
-
-
-struct CheckPoint {
-    
-    let numberOfObstaclesPassed: UInt
-    let score: Int
-}
-
-
 class GameScene: SKScene {
+    
+    
+    let inputSensibility: CGFloat = 0.2 // Newton.seconds per input velocity unit
+    let scrollingSpeed: CGFloat = 200 // points per second
+    let obstacleWidth: CGFloat = 20
+    
+    let gameoverPhysicsBodyCategoryBitMask: UInt32 = 0b10
+    let successPhysicsBodyCategoryBitMask: UInt32 = 0b01
+    
+    
     
     
     var customDelegate: GameSceneDelegate?
     
-    let inputSensibility: CGFloat = 0.2 // Newton.seconds per input velocity unit
-    let scrollingSpeed: CGFloat = 200 // points per second
+    var MIDIDevice: MIKMIDIDevice! = nil
     
-    let obstacleWidth: CGFloat = 20
+    
 
-    var MIDIDevice: MIKMIDIDevice! = nil {
-        didSet {
-            DispatchQueue.main.async {
-                guard self.deviceLabelNode != nil else { return }
-                self.updateDeviceLabel()
-            }
-        }
-    }
-    
     var characterNode: SKNode!
     var obstacleNodesFromRightToLeft: [SKNode] = []
     
     var leftMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.last }
     var rightMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.first }
     
-    let gameoverPhysicsBodyCategoryBitMask: UInt32 = 0b10
-    let successPhysicsBodyCategoryBitMask: UInt32 = 0b01
+    
     
     var gameState: GameState! = nil
     
@@ -79,9 +71,6 @@ class GameScene: SKScene {
             DispatchQueue.main.async {
                 guard self.scoreLabelNode != nil else { return }
                 self.updateScoreLabel()
-            }
-            if self.currentScore > self.highestScore {
-                self.highestScore = self.currentScore
             }
         }
     }
@@ -172,6 +161,7 @@ class GameScene: SKScene {
     
     func didSelectDevice() {
         
+        self.updateDeviceLabel()
         self.connectToMIDIDevice()
         self.isPaused = false
     }
@@ -423,6 +413,22 @@ class GameScene: SKScene {
         
         return node
     }
+    
+    
+    func didCollideWithObstacleOrGround() {
+        
+        self.gameState = .gameover
+    }
+    
+    
+    func didPassObstacle() {
+        
+        self.currentScore += 1
+        
+        if self.currentScore > self.highestScore {
+            self.highestScore = self.currentScore
+        }
+    }
 }
 
 extension GameScene: SKPhysicsContactDelegate {
@@ -438,11 +444,11 @@ extension GameScene: SKPhysicsContactDelegate {
          
             if categoryBitMasks.contains(self.successPhysicsBodyCategoryBitMask) {
                 
-                self.currentScore += 1
+                self.didPassObstacle()
                 
             } else if categoryBitMasks.contains(self.gameoverPhysicsBodyCategoryBitMask) {
 
-                self.gameState = .gameover
+                self.didCollideWithObstacleOrGround()
             }
             
         default:
