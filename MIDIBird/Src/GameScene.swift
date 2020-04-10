@@ -15,7 +15,7 @@ struct Obstacle {
 enum GameState: Equatable {
     
     case ready
-    case started(numberOfObstaclesPassed: UInt)
+    case started
     case gameover
 }
 
@@ -60,23 +60,9 @@ class GameScene: SKScene {
     var sceneViewPortHorizon: ClosedRange<CGFloat> { (-self.frame.width/2)...(+self.frame.width/2) }
     var obstacleLivingRegion: ClosedRange<CGFloat> { self.sceneViewPortHorizon.extended(by: 100) }
     
-    let obstaclesPerLevel = 5
-    
-    var mostRecentCheckPoint: CheckPoint?
+    var numberOfObstaclesPassed = 0
     
     var scoreLabelNode: SKLabelNode! = nil
-    
-    var currentLevel: Int = 0 {
-        didSet {
-            DispatchQueue.main.async {
-                guard self.scoreLabelNode != nil else { return }
-                self.updateScoreLabel()
-            }
-            if self.currentLevel > self.highestLevel {
-                self.highestLevel = self.currentLevel
-            }
-        }
-    }
     
     var currentScore: Int = 0 {
         didSet {
@@ -90,16 +76,6 @@ class GameScene: SKScene {
         }
     }
     
-    var highestLevel: Int = 0 {
-        didSet {
-            DispatchQueue.main.async {
-                guard self.scoreLabelNode != nil else { return }
-                self.updateScoreLabel()
-            }
-            self.persistHighestLevel()
-        }
-    }
-    
     var highestScore: Int = 0 {
         didSet {
             DispatchQueue.main.async {
@@ -110,7 +86,6 @@ class GameScene: SKScene {
         }
     }
     
-    let highestLevelPersistanceKey = "highestLevel"
     let highestScorePersistanceKey = "highestScore"
     
     
@@ -142,7 +117,6 @@ class GameScene: SKScene {
         self.physicsBody!.categoryBitMask = self.gameoverPhysicsBodyCategoryBitMask
         
         self.loadHighestScore()
-        self.loadHighestLevel()
     }
     
     
@@ -154,35 +128,17 @@ class GameScene: SKScene {
     }
     
     
-    func loadHighestLevel() {
-        
-        if let level = UserDefaults.standard.value(forKey: self.highestLevelPersistanceKey) as? Int {
-            self.highestLevel = level
-        }
-    }
-    
-    
     func persistHighestScore() {
         
         UserDefaults.standard.set(self.highestScore, forKey: self.highestScorePersistanceKey)
     }
     
     
-    func persistHighestLevel() {
-        
-        UserDefaults.standard.set(self.highestLevel, forKey: self.highestLevelPersistanceKey)
-    }
-    
-    
     func updateScoreLabel() {
         
         self.scoreLabelNode.text = """
-                    
-                    Level: \(self.currentLevel)
                     Score: \(self.currentScore)
-                    
-                    Highest level: \(self.highestLevel)
-                    Highest score: \(self.highestScore)
+                    Best: \(self.highestScore)
                     """
     }
     
@@ -196,25 +152,10 @@ class GameScene: SKScene {
     
     func spawnNewObstacle(xPositionOfPreviousObstacle: CGFloat?) {
         
-        let level = self.currentLevel
-        
-        let levelConfigs: [ObstaclesParameter] = [
-            ObstaclesParameter(openingSizeRange: 80%...90%, openingPositionRange: 40%...60%),
-            ObstaclesParameter(openingSizeRange: 70%...80%, openingPositionRange: 40%...60%),
-            ObstaclesParameter(openingSizeRange: 60%...70%, openingPositionRange: 40%...60%),
-            ObstaclesParameter(openingSizeRange: 50%...60%, openingPositionRange: 40%...60%),
-            ObstaclesParameter(openingSizeRange: 40%...50%, openingPositionRange: 40%...60%),
-            ObstaclesParameter(openingSizeRange: 30%...40%, openingPositionRange: 30%...70%),
-            ObstaclesParameter(openingSizeRange: 20%...30%, openingPositionRange: 20%...80%),
-            ObstaclesParameter(openingSizeRange: 10%...20%, openingPositionRange: 10%...90%),
-        ]
-        
-        let config = level < levelConfigs.count ? levelConfigs[level] : levelConfigs.last ?? ObstaclesParameter(openingSizeRange: 10%...90%, openingPositionRange: 40%...60%)
-        
         let obstacleStandardSpacing: CGFloat = 400
         
-        let obstacleOpeningSize = Percent.random(in: config.openingSizeRange)
-        let obstacleOpeningPosition = Percent.random(in: config.openingPositionRange)
+        let obstacleOpeningSize = Percent.random(in: 80%...90%)
+        let obstacleOpeningPosition = Percent.random(in: 40%...60%)
         let obstacleDistanceFromPreviousObstacle = obstacleStandardSpacing
         
         let obstacleXPosition = xPositionOfPreviousObstacle == nil ? (self.sceneViewPortHorizon.upperBound + self.obstacleWidth) : (xPositionOfPreviousObstacle! + obstacleDistanceFromPreviousObstacle)
@@ -271,11 +212,9 @@ class GameScene: SKScene {
             
         case .ready:
             
-            self.enableCharacterGravity(true)
-            self.gameState = .started(numberOfObstaclesPassed: 0)
-            self.reloadMostRecentCheckPoint()
+            self.startGame()
             
-        case .started(_):
+        case .started:
             
             self.resetCharacterVelocity()
             self.applyCharacterImpulse(with: velocity)
@@ -284,6 +223,13 @@ class GameScene: SKScene {
             
             return
         }
+    }
+    
+    
+    func startGame() {
+        
+        self.enableCharacterGravity(true)
+        self.gameState = .started
     }
     
     
@@ -297,17 +243,8 @@ class GameScene: SKScene {
         
         self.gameState = .ready
         
+        self.numberOfObstaclesPassed = 0
         self.currentScore = 0
-        self.currentLevel = 0
-    }
-    
-    
-    func reloadMostRecentCheckPoint() {
-        
-        guard let checkPoint = self.mostRecentCheckPoint else { return }
-        
-        self.gameState = .started(numberOfObstaclesPassed: checkPoint.numberOfObstaclesPassed)
-        self.currentScore = checkPoint.score
     }
     
     
@@ -339,7 +276,7 @@ class GameScene: SKScene {
         
         switch self.gameState {
         
-        case .started(_):
+        case .started:
          
             if let leftMostObstacleNode = self.leftMostObstacleNode {
                 if leftMostObstacleNode.position.x < self.obstacleLivingRegion.lowerBound {
@@ -428,19 +365,12 @@ extension GameScene: SKPhysicsContactDelegate {
         
         switch self.gameState {
             
-        case .started(let numberOfObstaclesPassed):
+        case .started:
          
             if categoryBitMasks.contains(self.successPhysicsBodyCategoryBitMask) {
                 
-                let newNumberOfObstaclesPassed = numberOfObstaclesPassed + 1
-                
-                self.gameState = .started(numberOfObstaclesPassed: newNumberOfObstaclesPassed)
-                
-                self.currentLevel = Int(newNumberOfObstaclesPassed)/Int(self.obstaclesPerLevel)
-                
+                self.numberOfObstaclesPassed += 1
                 self.currentScore += 1
-                
-                self.mostRecentCheckPoint = CheckPoint(numberOfObstaclesPassed: newNumberOfObstaclesPassed, score: self.currentScore)
                 
             } else if categoryBitMasks.contains(self.gameoverPhysicsBodyCategoryBitMask) {
 
@@ -472,6 +402,6 @@ extension ClosedRange where Bound == CGFloat {
     
     func extended(by value: CGFloat) -> ClosedRange<CGFloat> {
         
-        (self.lowerBound - value)...(self.upperBound + value)
+        return (self.lowerBound - value)...(self.upperBound + value)
     }
 }
