@@ -37,6 +37,8 @@ struct CheckPoint {
 class GameScene: SKScene {
     
     
+    var customDelegate: GameSceneDelegate?
+    
     let inputSensibility: CGFloat = 0.2 // Newton.seconds per input velocity unit
     let scrollingSpeed: CGFloat = 200 // points per second
     
@@ -46,7 +48,7 @@ class GameScene: SKScene {
         didSet {
             DispatchQueue.main.async {
                 guard self.deviceLabelNode != nil else { return }
-                self.deviceLabelNode.text = self.MIDIDevice?.displayName ?? ""
+                self.updateDeviceLabel()
             }
         }
     }
@@ -122,8 +124,6 @@ class GameScene: SKScene {
         
         self.resetGame()
         
-        connectToMIDIDevice()
-        
         view.showsPhysics = true
         
         physicsWorld.contactDelegate = self
@@ -133,6 +133,47 @@ class GameScene: SKScene {
         self.physicsBody!.categoryBitMask = self.gameoverPhysicsBodyCategoryBitMask
         
         self.loadHighestScore()
+        
+        self.updateDeviceLabel()
+        
+        if self.MIDIDevice != nil {
+            self.connectToMIDIDevice()
+        } else {
+            self.triggerDeviceSelection()
+        }
+    }
+    
+    
+    func updateDeviceLabel() {
+        
+        self.deviceLabelNode.text = self.MIDIDevice?.displayName ?? ""
+    }
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        if let touch = touches.first {
+            if let node = nodes(at: touch.location(in: self)).first {
+                if node == self.deviceLabelNode {
+                    
+                    self.triggerDeviceSelection()
+                }
+            }
+        }
+    }
+    
+    
+    func triggerDeviceSelection() {
+        
+        self.isPaused = true
+        self.customDelegate?.didTriggerDeviceSelection()
+    }
+    
+    
+    func didSelectDevice() {
+        
+        self.connectToMIDIDevice()
+        self.isPaused = false
     }
     
     
@@ -454,4 +495,11 @@ extension ClosedRange where Bound == Percent {
         
         return self.upperBound - self.lowerBound
     }
+}
+
+
+protocol GameSceneDelegate {
+    
+    
+    func didTriggerDeviceSelection()
 }

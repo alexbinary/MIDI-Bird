@@ -11,6 +11,7 @@ class ViewController: UIViewController {
     
     
     var lastUsedMIDIDeviceDisplayName: String? {
+        
         get { UserDefaults.standard.value(forKey: self.lastUsedMIDIDeviceDisplayNamePersistanceKey) as? String }
         set { UserDefaults.standard.set(newValue, forKey: self.lastUsedMIDIDeviceDisplayNamePersistanceKey) }
     }
@@ -18,42 +19,61 @@ class ViewController: UIViewController {
     let lastUsedMIDIDeviceDisplayNamePersistanceKey = "lastUsedMIDIDeviceDisplayName"
     
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        if let name = self.lastUsedMIDIDeviceDisplayName,
-            let device = MIKMIDIDeviceManager.shared.availableDevices.first(where: { $0.displayName == name }) {
-            
-            self.presentGameView(with: device)
-            
-        } else {
-            
-            self.presentDeviceSelectionView()
-        }
-    }
-    
-    
-    func presentDeviceSelectionView() {
-        
-        let deviceSelectionTableView = UITableView()
-        deviceSelectionTableView.dataSource = self
-        deviceSelectionTableView.delegate = self
-        deviceSelectionTableView.frame = self.view.bounds
-        self.view.addSubview(deviceSelectionTableView)
-    }
-    
-    
-    func presentGameView(with device: MIKMIDIDevice) {
+    lazy var gameScene: GameScene = {
         
         let scene = GameScene()
         scene.scaleMode = .resizeFill
-        scene.MIDIDevice = device
+        scene.customDelegate = self
+        
+        return scene
+    }()
+    
+    
+    lazy var deviceSelectionView: UIView = {
+        
+        let tableView = UITableView()
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.frame = self.view.bounds
+        
+        return tableView
+    }()
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
         let sceneView = SKView()
         sceneView.frame = self.view.bounds
         self.view.addSubview(sceneView)
         
-        sceneView.presentScene(scene)
+        if let name = self.lastUsedMIDIDeviceDisplayName,
+            let device = MIKMIDIDeviceManager.shared.availableDevices.first(where: { $0.displayName == name }) {
+            
+            self.setDevice(device)
+        }
+        
+        sceneView.presentScene(self.gameScene)
+    }
+    
+    
+    func presentDeviceSelectionView() {
+        
+        self.view.addSubview(self.deviceSelectionView)
+    }
+    
+
+    func dismissDeviceSelectionView() {
+        
+        self.deviceSelectionView.removeFromSuperview()
+    }
+
+    
+    func setDevice(_ device: MIKMIDIDevice) {
+        
+        self.gameScene.MIDIDevice = device
+        
+        self.lastUsedMIDIDeviceDisplayName = device.displayName
     }
 }
 
@@ -87,8 +107,20 @@ extension ViewController: UITableViewDelegate {
         
         let device = self.availableMIDIDevices[indexPath.row]
         
-        self.presentGameView(with: device)
+        self.setDevice(device)
         
-        self.lastUsedMIDIDeviceDisplayName = device.displayName
+        self.gameScene.didSelectDevice()
+        
+        self.dismissDeviceSelectionView()
+    }
+}
+
+
+extension ViewController: GameSceneDelegate {
+    
+    
+    func didTriggerDeviceSelection() {
+        
+        self.presentDeviceSelectionView()
     }
 }
