@@ -60,7 +60,7 @@ class GameScene: SKScene {
     var sceneViewPortHorizon: ClosedRange<CGFloat> { (-self.frame.width/2)...(+self.frame.width/2) }
     var obstacleLivingRegion: ClosedRange<CGFloat> { self.sceneViewPortHorizon.extended(by: 100) }
     
-    var numberOfObstaclesPassed = 0
+    var numberOfObstaclesGenerated = 0
     
     var scoreLabelNode: SKLabelNode! = nil
     
@@ -152,10 +152,20 @@ class GameScene: SKScene {
     
     func spawnNewObstacle(xPositionOfPreviousObstacle: CGFloat?) {
         
-        let obstacleStandardSpacing: CGFloat = 400
+        let numberOfObstaclesGenerated = self.numberOfObstaclesGenerated
         
-        let obstacleOpeningSize = Percent.random(in: 80%...90%)
-        let obstacleOpeningPosition = Percent.random(in: 40%...60%)
+        let reductionAtEachStep: Double = 1.05    // value the factor value is divided by at each step
+        let reductionFactor = Percent(fraction: pow(reductionAtEachStep, -Double(numberOfObstaclesGenerated)))
+        
+        let obstacleOpeningSizeRange = 1%...30%
+        let obstacleOpeningSize = reductionFactor * obstacleOpeningSizeRange.width + obstacleOpeningSizeRange.lowerBound
+        
+        let obstacleOpeningPositionCenter = 50%
+        let obstacleOpeningPositionWindowRange = 0%...40%
+        let obstacleOpeningPositionWindowWidth = (100% - reductionFactor) * obstacleOpeningPositionWindowRange.width + obstacleOpeningPositionWindowRange.lowerBound
+        let obstacleOpeningPosition = Percent.random(in: Percent.range(ofWidth: obstacleOpeningPositionWindowWidth, centeredOn: obstacleOpeningPositionCenter))
+        
+        let obstacleStandardSpacing: CGFloat = 400
         let obstacleDistanceFromPreviousObstacle = obstacleStandardSpacing
         
         let obstacleXPosition = xPositionOfPreviousObstacle == nil ? (self.sceneViewPortHorizon.upperBound + self.obstacleWidth) : (xPositionOfPreviousObstacle! + obstacleDistanceFromPreviousObstacle)
@@ -166,6 +176,8 @@ class GameScene: SKScene {
         node.run(SKAction.repeatForever(SKAction.moveBy(x: -scrollingSpeed, y: 0, duration: 1)))
         self.addChild(node)
         register(obstacleNode: node)
+        
+        self.numberOfObstaclesGenerated += 1
     }
     
     
@@ -243,7 +255,7 @@ class GameScene: SKScene {
         
         self.gameState = .ready
         
-        self.numberOfObstaclesPassed = 0
+        self.numberOfObstaclesGenerated = 0
         self.currentScore = 0
     }
     
@@ -369,7 +381,6 @@ extension GameScene: SKPhysicsContactDelegate {
          
             if categoryBitMasks.contains(self.successPhysicsBodyCategoryBitMask) {
                 
-                self.numberOfObstaclesPassed += 1
                 self.currentScore += 1
                 
             } else if categoryBitMasks.contains(self.gameoverPhysicsBodyCategoryBitMask) {
@@ -389,19 +400,42 @@ extension GameScene: SKPhysicsContactDelegate {
 extension Percent {
     
     
+    static func range(ofWidth width: Percent, centeredOn centerValue: Percent) -> ClosedRange<Percent> {
+        
+        return (centerValue - width/2)...(centerValue + width/2)
+    }
+    
+    
     static func random(in range: ClosedRange<Percent>) -> Percent {
         
         return Percent(fraction: Double.random(in: range.lowerBound.fraction...range.upperBound.fraction))
+    }
+    
+    
+    public static func * (lhs: Self, rhs: Self) -> Self {
+        
+        self.init(fraction: lhs.fraction * rhs.fraction)
     }
 }
 
 
 
 extension ClosedRange where Bound == CGFloat {
-    
+
     
     func extended(by value: CGFloat) -> ClosedRange<CGFloat> {
         
         return (self.lowerBound - value)...(self.upperBound + value)
+    }
+}
+
+
+
+extension ClosedRange where Bound == Percent {
+    
+    
+    var width: Percent {
+        
+        return self.upperBound - self.lowerBound
     }
 }
