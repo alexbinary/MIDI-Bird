@@ -66,26 +66,10 @@ class GameScene: SKScene {
     var scoreLabelNode: SKLabelNode! = nil
     var deviceLabelNode: SKLabelNode! = nil
     
-    var currentScore: Int = 0 {
-        didSet {
-            DispatchQueue.main.async {
-                guard self.scoreLabelNode != nil else { return }
-                self.updateScoreLabel()
-            }
-        }
-    }
+    var currentScore: Int = 0
+    var highscore: Int = 0
     
-    var highestScore: Int = 0 {
-        didSet {
-            DispatchQueue.main.async {
-                guard self.scoreLabelNode != nil else { return }
-                self.updateScoreLabel()
-            }
-            self.persistHighestScore()
-        }
-    }
-    
-    let highestScorePersistanceKey = "highestScore"
+    let highscorePersistanceKey = "highscore"
     
     
     override func didMove(to view: SKView) {
@@ -121,7 +105,7 @@ class GameScene: SKScene {
                                                to: CGPoint(x: +self.frame.width/2, y: 0))
         self.physicsBody!.categoryBitMask = self.gameoverPhysicsBodyCategoryBitMask
         
-        self.loadHighestScore()
+        self.loadHighscore()
         
         self.updateDeviceLabel()
         
@@ -167,17 +151,17 @@ class GameScene: SKScene {
     }
     
     
-    func loadHighestScore() {
+    func loadHighscore() {
         
-        if let score = UserDefaults.standard.value(forKey: self.highestScorePersistanceKey) as? Int {
-            self.highestScore = score
+        if let score = UserDefaults.standard.value(forKey: self.highscorePersistanceKey) as? Int {
+            self.highscore = score
         }
     }
     
     
-    func persistHighestScore() {
+    func persistHighscore() {
         
-        UserDefaults.standard.set(self.highestScore, forKey: self.highestScorePersistanceKey)
+        UserDefaults.standard.set(self.highscore, forKey: self.highscorePersistanceKey)
     }
     
     
@@ -185,7 +169,7 @@ class GameScene: SKScene {
         
         self.scoreLabelNode.text = """
                     Score: \(self.currentScore)
-                    Best: \(self.highestScore)
+                    Best: \(self.highscore)
                     """
     }
     
@@ -304,6 +288,8 @@ class GameScene: SKScene {
         
         self.numberOfObstaclesGenerated = 0
         self.currentScore = 0
+        
+        self.updateScoreLabel()
     }
     
     
@@ -424,10 +410,10 @@ class GameScene: SKScene {
     func didPassObstacle() {
         
         self.currentScore += 1
+        self.highscore = max(self.highscore, self.currentScore)
         
-        if self.currentScore > self.highestScore {
-            self.highestScore = self.currentScore
-        }
+        self.updateScoreLabel()
+        self.persistHighscore()
     }
 }
 
