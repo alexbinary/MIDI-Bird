@@ -10,10 +10,26 @@ class ViewController: UIViewController {
     var availableMIDIDevices: [MIKMIDIDevice] { MIKMIDIDeviceManager.shared.availableDevices }
     
     
+    var lastUsedMIDIDeviceDisplayName: String? {
+        get { UserDefaults.standard.value(forKey: self.lastUsedMIDIDeviceDisplayNamePersistanceKey) as? String }
+        set { UserDefaults.standard.set(newValue, forKey: self.lastUsedMIDIDeviceDisplayNamePersistanceKey) }
+    }
+    
+    let lastUsedMIDIDeviceDisplayNamePersistanceKey = "lastUsedMIDIDeviceDisplayName"
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.presentDeviceSelectionView()
+        if let name = self.lastUsedMIDIDeviceDisplayName,
+            let device = MIKMIDIDeviceManager.shared.availableDevices.first(where: { $0.displayName == name }) {
+            
+            self.presentGameView(with: device)
+            
+        } else {
+            
+            self.presentDeviceSelectionView()
+        }
     }
     
     
@@ -72,5 +88,7 @@ extension ViewController: UITableViewDelegate {
         let device = self.availableMIDIDevices[indexPath.row]
         
         self.presentGameView(with: device)
+        
+        self.lastUsedMIDIDeviceDisplayName = device.displayName
     }
 }
