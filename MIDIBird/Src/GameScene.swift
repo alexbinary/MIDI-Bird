@@ -42,7 +42,14 @@ class GameScene: SKScene {
     
     let obstacleWidth: CGFloat = 20
 
-    var MIDIDevice: MIKMIDIDevice! = nil
+    var MIDIDevice: MIKMIDIDevice! = nil {
+        didSet {
+            DispatchQueue.main.async {
+                guard self.deviceLabelNode != nil else { return }
+                self.deviceLabelNode.text = self.MIDIDevice?.displayName ?? ""
+            }
+        }
+    }
     
     var characterNode: SKNode!
     var obstacleNodesFromRightToLeft: [SKNode] = []
@@ -63,6 +70,7 @@ class GameScene: SKScene {
     var numberOfObstaclesGenerated = 0
     
     var scoreLabelNode: SKLabelNode! = nil
+    var deviceLabelNode: SKLabelNode! = nil
     
     var currentScore: Int = 0 {
         didSet {
@@ -103,6 +111,14 @@ class GameScene: SKScene {
         self.scoreLabelNode.horizontalAlignmentMode = .right
         self.scoreLabelNode.position = CGPoint(x: self.frame.width/2 - 100, y: self.frame.height - 100)
         self.addChild(self.scoreLabelNode)
+        
+        self.deviceLabelNode = SKLabelNode()
+        self.deviceLabelNode.numberOfLines = 0
+        self.deviceLabelNode.fontColor = .white
+        self.deviceLabelNode.verticalAlignmentMode = .top
+        self.deviceLabelNode.horizontalAlignmentMode = .right
+        self.deviceLabelNode.position = CGPoint(x: self.frame.width/2 - 100, y: 100)
+        self.addChild(self.deviceLabelNode)
         
         self.resetGame()
         
