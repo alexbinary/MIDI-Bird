@@ -42,7 +42,7 @@ class GameScene: SKScene {
     
     let obstacleWidth: CGFloat = 20
 
-    let MIDIDeviceName = "Alesis Recital Pro "  // trailing space intentional
+    var MIDIDevice: MIKMIDIDevice! = nil
     
     var characterNode: SKNode!
     var obstacleNodesFromRightToLeft: [SKNode] = []
@@ -208,7 +208,7 @@ class GameScene: SKScene {
     
     func connectToMIDIDevice() {
         
-        let device = MIKMIDIDeviceManager.shared.availableDevices.first(where: { $0.displayName == MIDIDeviceName })!
+        let device = self.MIDIDevice!
         
         try! MIKMIDIDeviceManager.shared.connect(device) { (_, commands) in
             commands.compactMap { $0 as? MIKMIDINoteOnCommand } .filter { $0.velocity > 0 } .forEach { command in
