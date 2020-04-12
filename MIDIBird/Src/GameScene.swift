@@ -115,7 +115,9 @@ class GameScene: SKScene {
     
     func createCharacterNode() -> SKNode {
         
-        let node = SKShapeNode(circleOfRadius: 10)
+        let node = SKSpriteNode(imageNamed: "mediator")
+        
+        node.size = CGSize(width: 50, height: 50)
         
         node.physicsBody = SKPhysicsBody(circleOfRadius: 10)
         node.physicsBody!.isDynamic = false
