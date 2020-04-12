@@ -34,7 +34,6 @@ class ViewController: UIViewController {
         let tableView = UITableView()
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.frame = self.view.bounds
         
         return tableView
     }()
@@ -44,7 +43,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         let sceneView = SKView()
-        sceneView.frame = self.view.bounds
         self.view.addSubview(sceneView)
         
         sceneView.translatesAutoresizingMaskIntoConstraints = false
