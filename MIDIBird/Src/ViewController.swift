@@ -21,8 +21,8 @@ class ViewController: UIViewController {
     
     lazy var gameScene: GameScene = {
         
-        let scene = GameScene()
-        scene.scaleMode = .resizeFill
+        let scene = GameScene(size: CGSize(width: 1024, height: 768))
+        scene.scaleMode = .aspectFit
         scene.customDelegate = self
         
         return scene
@@ -47,6 +47,12 @@ class ViewController: UIViewController {
         sceneView.frame = self.view.bounds
         self.view.addSubview(sceneView)
         
+        sceneView.translatesAutoresizingMaskIntoConstraints = false
+        sceneView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        sceneView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        sceneView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        sceneView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        
         if let name = self.lastUsedMIDIDeviceDisplayName,
             let device = MIKMIDIDeviceManager.shared.availableDevices.first(where: { $0.displayName == name }) {
             
@@ -60,6 +66,12 @@ class ViewController: UIViewController {
     func presentDeviceSelectionView() {
         
         self.view.addSubview(self.deviceSelectionView)
+        
+        self.deviceSelectionView.translatesAutoresizingMaskIntoConstraints = false
+        self.deviceSelectionView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        self.deviceSelectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.deviceSelectionView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.deviceSelectionView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
     }
     
 
