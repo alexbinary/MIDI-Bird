@@ -309,10 +309,22 @@ class GameScene: SKScene {
         topNode.position = CGPoint(x: 0, y: self.frame.height)
         topNode.physicsBody!.categoryBitMask = self.gameoverPhysicsBodyCategoryBitMask
         
+        let spriteNodeTop = SKSpriteNode(imageNamed: "flute")
+        spriteNodeTop.anchorPoint = CGPoint(x: 0.5, y: 0)
+        spriteNodeTop.size = CGSize(width: 2*self.obstacleWidth, height: absoluteTopHeight)
+        spriteNodeTop.position = CGPoint(x: 0, y: absoluteBottomHeight + absoluteMiddleHeight)
+        
+        let spriteNodeBottom = SKSpriteNode(imageNamed: "flute")
+        spriteNodeBottom.anchorPoint = CGPoint(x: 0.5, y: 0)
+        spriteNodeBottom.size = CGSize(width: 2*self.obstacleWidth, height: absoluteBottomHeight)
+        spriteNodeBottom.position = CGPoint(x: 0, y: 0)
+        
         let rootNode = SKNode()
         rootNode.addChild(bottomNode)
         rootNode.addChild(middleNode)
         rootNode.addChild(topNode)
+        rootNode.addChild(spriteNodeBottom)
+        rootNode.addChild(spriteNodeTop)
         
         return rootNode
     }
