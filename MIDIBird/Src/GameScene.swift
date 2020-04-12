@@ -78,6 +78,9 @@ class GameScene: SKScene {
         
         self.anchorPoint = CGPoint(x: 0.5, y: 0)
         
+        let backgroundNode = SKSpriteNode(imageNamed: "sheet_music_paper")
+        self.addChild(backgroundNode)
+        
         self.characterNode = self.createCharacterNode()
         self.addChild(self.characterNode)
 
