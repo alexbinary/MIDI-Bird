@@ -64,7 +64,6 @@ class GameScene: SKScene {
     var highscore: Int = 0
     
     
-//    var MIDIDevice: MIKMIDIDevice? { MIKMIDIDeviceManager.shared.availableDevices.first(where: { $0.displayName == "Alesis Recital Pro " }) }
     var MIDIDevice: MIKMIDIDevice? = nil
     var MIDIDeviceConnectionToken: Any? = nil
     
