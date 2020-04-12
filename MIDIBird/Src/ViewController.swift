@@ -68,10 +68,10 @@ class ViewController: UIViewController {
         self.view.addSubview(self.deviceSelectionView)
         
         self.deviceSelectionView.translatesAutoresizingMaskIntoConstraints = false
-        self.deviceSelectionView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        self.deviceSelectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        self.deviceSelectionView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        self.deviceSelectionView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        self.deviceSelectionView.topAnchor.constraint(equalTo: self.view.readableContentGuide.topAnchor).isActive = true
+        self.deviceSelectionView.bottomAnchor.constraint(equalTo: self.view.readableContentGuide.bottomAnchor).isActive = true
+        self.deviceSelectionView.leftAnchor.constraint(equalTo: self.view.readableContentGuide.leftAnchor).isActive = true
+        self.deviceSelectionView.rightAnchor.constraint(equalTo: self.view.readableContentGuide.rightAnchor).isActive = true
     }
     
 
