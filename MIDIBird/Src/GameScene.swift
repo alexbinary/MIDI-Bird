@@ -73,7 +73,7 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         
         #if DEBUG
-            view.showsPhysics = true
+//            view.showsPhysics = true
         #endif
         
         self.anchorPoint = CGPoint(x: 0.5, y: 0)
@@ -337,6 +337,7 @@ class GameScene: SKScene {
         let path = CGPath(rect: rect, transform: nil)
         
         let node = SKShapeNode(path: path)
+        node.strokeColor = .clear
         
         node.physicsBody = SKPhysicsBody(rectangleOf: rect.size, center: CGPoint(x: rect.midX, y: rect.midY))
         node.physicsBody!.isDynamic = false
