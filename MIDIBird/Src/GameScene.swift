@@ -212,10 +212,14 @@ class GameScene: SKScene {
         
         let device = self.MIDIDevice!
         
-        self.MIDIDeviceConnectionToken = try! MIKMIDIDeviceManager.shared.connect(device) { (_, commands) in
-            commands.compactMap { $0 as? MIKMIDINoteOnCommand } .filter { $0.velocity > 0 } .forEach { command in
-                self.onMIDIInput(command.velocity)
+        do {
+            self.MIDIDeviceConnectionToken = try MIKMIDIDeviceManager.shared.connect(device) { (_, commands) in
+                commands.compactMap { $0 as? MIKMIDINoteOnCommand } .filter { $0.velocity > 0 } .forEach { command in
+                    self.onMIDIInput(command.velocity)
+                }
             }
+        } catch {
+            self.customDelegate?.showError(error)
         }
     }
     
@@ -472,6 +476,8 @@ protocol GameSceneDelegate {
     
     
     func didTriggerMIDIDeviceSelection()
+    
+    func showError(_ error: Error)
 }
 
 
