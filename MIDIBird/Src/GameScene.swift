@@ -73,7 +73,7 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         
         #if DEBUG
-//            view.showsPhysics = true
+//        view.showsPhysics = true
         #endif
         
         self.anchorPoint = CGPoint(x: 0.5, y: 0)
@@ -188,9 +188,14 @@ class GameScene: SKScene {
                 if node == self.MIDIdeviceLabelNode {
                     
                     self.triggerMIDIDeviceSelection()
+                    return
                 }
             }
         }
+        
+        #if DEBUG
+        self.onMIDIInput(32)
+        #endif
     }
     
     
