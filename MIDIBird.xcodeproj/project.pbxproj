@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		299F90D7243DF26200F1D493 /* Percent in Frameworks */ = {isa = PBXBuildFile; productRef = 299F90D6243DF26200F1D493 /* Percent */; };
 		29C363DF23F14EA0003C4DF4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363DE23F14EA0003C4DF4 /* AppDelegate.swift */; };
-		29C363E123F14EA0003C4DF4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363E023F14EA0003C4DF4 /* SceneDelegate.swift */; };
 		29C363E323F14EA0003C4DF4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C363E223F14EA0003C4DF4 /* ViewController.swift */; };
 		29C363E623F14EA0003C4DF4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29C363E423F14EA0003C4DF4 /* Main.storyboard */; };
 		29C363E823F14EA2003C4DF4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29C363E723F14EA2003C4DF4 /* Assets.xcassets */; };
@@ -60,7 +59,6 @@
 /* Begin PBXFileReference section */
 		29C363DC23F14EA0003C4DF4 /* MIDIBird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MIDIBird.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		29C363DE23F14EA0003C4DF4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		29C363E023F14EA0003C4DF4 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		29C363E223F14EA0003C4DF4 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		29C363E523F14EA0003C4DF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		29C363E723F14EA2003C4DF4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -118,7 +116,6 @@
 				29C363E923F14EA2003C4DF4 /* LaunchScreen.storyboard */,
 				29C363E423F14EA0003C4DF4 /* Main.storyboard */,
 				29C363DE23F14EA0003C4DF4 /* AppDelegate.swift */,
-				29C363E023F14EA0003C4DF4 /* SceneDelegate.swift */,
 				29C363E223F14EA0003C4DF4 /* ViewController.swift */,
 				29C363F823F15948003C4DF4 /* GameScene.swift */,
 			);
@@ -254,7 +251,6 @@
 				29C363E323F14EA0003C4DF4 /* ViewController.swift in Sources */,
 				29C363DF23F14EA0003C4DF4 /* AppDelegate.swift in Sources */,
 				29C363FA23F15A05003C4DF4 /* GameScene.swift in Sources */,
-				29C363E123F14EA0003C4DF4 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,6 +398,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2N6DR3R99K;
 				INFOPLIST_FILE = MIDIBird/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -422,6 +419,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2N6DR3R99K;
 				INFOPLIST_FILE = MIDIBird/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
