@@ -52,6 +52,7 @@ class ViewController: UIViewController {
         let tableView = UITableView()
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.separatorColor = .clear
         
         stackView.addArrangedSubview(headerView)
         stackView.addArrangedSubview(tableView)
@@ -125,7 +126,26 @@ extension ViewController: UITableViewDataSource {
         
         let cell = UITableViewCell()
         
-        cell.textLabel?.text = device.displayName
+        let container = UIView()
+        container.backgroundColor = .orange
+        
+        let label = UILabel()
+        label.text = device.displayName
+        label.font = UIFont.preferredFont(forTextStyle: .largeTitle)
+        
+        container.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.topAnchor.constraint(equalTo: container.layoutMarginsGuide.topAnchor).isActive = true
+        label.bottomAnchor.constraint(equalTo: container.layoutMarginsGuide.bottomAnchor).isActive = true
+        label.leftAnchor.constraint(equalTo: container.layoutMarginsGuide.leftAnchor).isActive = true
+        label.rightAnchor.constraint(equalTo: container.layoutMarginsGuide.rightAnchor).isActive = true
+        
+        cell.contentView.addSubview(container)
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.topAnchor.constraint(equalTo: cell.contentView.layoutMarginsGuide.topAnchor).isActive = true
+        container.bottomAnchor.constraint(equalTo: cell.contentView.layoutMarginsGuide.bottomAnchor).isActive = true
+        container.leftAnchor.constraint(equalTo: cell.contentView.layoutMarginsGuide.leftAnchor).isActive = true
+        container.rightAnchor.constraint(equalTo: cell.contentView.layoutMarginsGuide.rightAnchor).isActive = true
         
         return cell
     }
@@ -136,6 +156,8 @@ extension ViewController: UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        tableView.deselectRow(at: indexPath, animated: true)
         
         let device = self.availableMIDIDevices[indexPath.row]
         
