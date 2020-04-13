@@ -35,6 +35,24 @@ class ViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
+        let headerView = UIView()
+        headerView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        
+        let label = UILabel()
+        label.text = "Select a device"
+        
+        headerView.addSubview(label)
+        
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.topAnchor.constraint(equalTo: headerView.layoutMarginsGuide.topAnchor, constant: 36).isActive = true
+        label.bottomAnchor.constraint(equalTo: headerView.layoutMarginsGuide.bottomAnchor, constant: 36).isActive = true
+        label.leftAnchor.constraint(equalTo: headerView.layoutMarginsGuide.leftAnchor).isActive = true
+        label.rightAnchor.constraint(equalTo: headerView.layoutMarginsGuide.rightAnchor).isActive = true
+        
+        tableView.tableHeaderView = headerView
+        
         return tableView
     }()
     

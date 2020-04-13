@@ -53,7 +53,7 @@ class GameScene: SKScene {
     var rightMostObstacleNode: SKNode? { self.obstacleNodesFromRightToLeft.first }
     
     var scoreLabelNode: SKLabelNode! = nil
-    var MIDIdeviceLabelNode: SKLabelNode! = nil
+    var MIDIDeviceLabelNode: SKLabelNode! = nil
     
     
     var gameState: GameState! = nil
@@ -73,7 +73,7 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         
         #if DEBUG
-//        view.showsPhysics = true
+        view.showsPhysics = true
         #endif
         
         self.anchorPoint = CGPoint(x: 0.5, y: 0)
@@ -90,11 +90,11 @@ class GameScene: SKScene {
         self.scoreLabelNode.position = CGPoint(x: self.frame.width/2 - 100, y: self.frame.height - 100)
         self.addChild(self.scoreLabelNode)
         
-        self.MIDIdeviceLabelNode = self.createDeviceLabelNode()
-        self.MIDIdeviceLabelNode.verticalAlignmentMode = .top
-        self.MIDIdeviceLabelNode.horizontalAlignmentMode = .right
-        self.MIDIdeviceLabelNode.position = CGPoint(x: self.frame.width/2 - 100, y: 100)
-        self.addChild(self.MIDIdeviceLabelNode)
+        self.MIDIDeviceLabelNode = self.createDeviceLabelNode()
+        self.MIDIDeviceLabelNode.verticalAlignmentMode = .top
+        self.MIDIDeviceLabelNode.horizontalAlignmentMode = .right
+        self.MIDIDeviceLabelNode.position = CGPoint(x: self.frame.width/2 - 100, y: 100)
+        self.addChild(self.MIDIDeviceLabelNode)
         
         self.physicsWorld.contactDelegate = self
         self.physicsBody = SKPhysicsBody(edgeFrom: CGPoint(x: -self.frame.width/2, y: 0), to: CGPoint(x: +self.frame.width/2, y: 0))
@@ -176,8 +176,8 @@ class GameScene: SKScene {
     
     func updateMIDIDeviceLabel() {
         
-        guard self.MIDIdeviceLabelNode != nil else { return }
-        self.MIDIdeviceLabelNode.text = self.MIDIDevice?.displayName ?? ""
+        guard self.MIDIDeviceLabelNode != nil else { return }
+        self.MIDIDeviceLabelNode.text = self.MIDIDevice?.displayName ?? ""
     }
     
     
@@ -185,7 +185,7 @@ class GameScene: SKScene {
         
         if let touch = touches.first {
             if let node = nodes(at: touch.location(in: self)).first {
-                if node == self.MIDIdeviceLabelNode {
+                if node == self.MIDIDeviceLabelNode {
                     
                     self.triggerMIDIDeviceSelection()
                     return
