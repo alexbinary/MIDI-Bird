@@ -49,12 +49,16 @@ class ViewController: UIViewController {
         label.leftAnchor.constraint(equalTo: headerView.layoutMarginsGuide.leftAnchor).isActive = true
         label.rightAnchor.constraint(equalTo: headerView.layoutMarginsGuide.rightAnchor).isActive = true
         
-        let tableView = UITableView()
-        tableView.dataSource = self
-        tableView.delegate = self
+        let layout = UICollectionViewFlowLayout()
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
         
         stackView.addArrangedSubview(headerView)
-        stackView.addArrangedSubview(tableView)
+        stackView.addArrangedSubview(collectionView)
         
         return stackView
     }()
@@ -143,6 +147,56 @@ extension ViewController: UITableViewDelegate {
         
         self.dismissDeviceSelectionView()
     }
+}
+
+
+extension ViewController: UICollectionViewDataSource {
+    
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        return self.availableMIDIDevices.count
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let device = self.availableMIDIDevices[indexPath.row]
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+        cell.backgroundColor = .white
+        
+        let label = UILabel()
+        label.text = device.displayName
+        label.sizeToFit()
+        
+        cell.contentView.addSubview(label)
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.topAnchor.constraint(equalTo: cell.contentView.layoutMarginsGuide.topAnchor).isActive = true
+        label.bottomAnchor.constraint(equalTo: cell.contentView.layoutMarginsGuide.bottomAnchor).isActive = true
+        label.leftAnchor.constraint(equalTo: cell.contentView.layoutMarginsGuide.leftAnchor).isActive = true
+        label.rightAnchor.constraint(equalTo: cell.contentView.layoutMarginsGuide.rightAnchor).isActive = true
+        
+        return cell
+    }
+}
+
+
+extension ViewController: UICollectionViewDelegateFlowLayout {
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+
+        return CGSize(width: 200, height: 200)
+    }
+}
+
+
+extension ViewController: UICollectionViewDelegate {
+    
+    
+    
 }
 
 
