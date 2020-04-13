@@ -31,29 +31,32 @@ class ViewController: UIViewController {
     
     lazy var deviceSelectionView: UIView = {
         
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        
+        let headerView = UIView()
+        headerView.backgroundColor = .white
+        
+        let label = UILabel()
+        label.text = "Select a device"
+        label.font = UIFont.preferredFont(forTextStyle: .title1)
+        
+        headerView.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.topAnchor.constraint(equalTo: headerView.layoutMarginsGuide.topAnchor, constant: 36).isActive = true
+        label.bottomAnchor.constraint(equalTo: headerView.layoutMarginsGuide.bottomAnchor, constant: -36).isActive = true
+        label.leftAnchor.constraint(equalTo: headerView.layoutMarginsGuide.leftAnchor).isActive = true
+        label.rightAnchor.constraint(equalTo: headerView.layoutMarginsGuide.rightAnchor).isActive = true
+        
         let tableView = UITableView()
         tableView.dataSource = self
         tableView.delegate = self
         
-        let headerView = UIView()
-        headerView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        stackView.addArrangedSubview(headerView)
+        stackView.addArrangedSubview(tableView)
         
-        let label = UILabel()
-        label.text = "Select a device"
-        
-        headerView.addSubview(label)
-        
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.topAnchor.constraint(equalTo: headerView.layoutMarginsGuide.topAnchor, constant: 36).isActive = true
-        label.bottomAnchor.constraint(equalTo: headerView.layoutMarginsGuide.bottomAnchor, constant: 36).isActive = true
-        label.leftAnchor.constraint(equalTo: headerView.layoutMarginsGuide.leftAnchor).isActive = true
-        label.rightAnchor.constraint(equalTo: headerView.layoutMarginsGuide.rightAnchor).isActive = true
-        
-        tableView.tableHeaderView = headerView
-        
-        return tableView
+        return stackView
     }()
     
     
